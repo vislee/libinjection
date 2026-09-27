@@ -1,0 +1,6 @@
+--TEST--
+decimal / version numbers in key=value position are not private IPs
+--INPUT--
+price=10.5&version=10.04&macos=10.5.1
+--EXPECTED--
+0

@@ -1,0 +1,6 @@
+--TEST--
+ambiguous english words in prose are not commands without argument shape
+--INPUT--
+wait; sleep tight tonight
+--EXPECTED--
+0

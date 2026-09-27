@@ -1,0 +1,6 @@
+--TEST--
+private-range dotted quads still detected after prefix hardening
+--INPUT--
+url=http://192.168.1.15/admin
+--EXPECTED--
+1

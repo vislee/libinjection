@@ -191,6 +191,32 @@ static char lower(char c)
     return c;
 }
 
+/* after a dotted private-range prefix, require the remaining octets
+ * of a full dotted quad so plain decimals and version strings
+ * ("price=10.5", "version=10.04", "10.5.1") stay benign */
+static int octet_tail_ok(const char* s, size_t len, size_t pos, int need)
+{
+    int seg;
+
+    for (seg = 0; seg < need; ++seg) {
+        size_t dlen = 0;
+        while (pos < len && ISDIGIT(s[pos]) && dlen < 3) {
+            pos += 1;
+            dlen += 1;
+        }
+        if (dlen == 0) {
+            return FALSE;
+        }
+        if (seg + 1 < need) {
+            if (pos >= len || s[pos] != '.') {
+                return FALSE;
+            }
+            pos += 1;
+        }
+    }
+    return TRUE;
+}
+
 static int boundary_ok(const char* s, size_t len, size_t pos, size_t nlen,
                        const char* needle)
 {
@@ -230,7 +256,18 @@ static int boundary_ok(const char* s, size_t len, size_t pos, size_t nlen,
         /* prefix targets like "192.168." continue with an octet, or
          * are hostnames straight after "//" ("http://10.internal") */
         if (ISDIGIT(next)) {
-            return TRUE;
+            /* a dotted-quad continuation must follow: the prefix dots
+             * decide how many octets are still needed ("10." -> 3,
+             * "192.168." -> 2), so decimals like "price=10.5" and
+             * version strings like "10.04" never match */
+            int dots = 0;
+            size_t q;
+            for (q = 0; q < nlen; ++q) {
+                if (needle[q] == '.') {
+                    dots += 1;
+                }
+            }
+            return octet_tail_ok(s, len, pos + nlen, 4 - dots);
         }
         if ((next >= 'a' && next <= 'z') || (next >= 'A' && next <= 'Z')) {
             return pos >= 2 && s[pos - 1] == '/' && s[pos - 2] == '/';

@@ -1,0 +1,6 @@
+--TEST--
+ambiguous words still commands with argument shape after them
+--INPUT--
+; sleep 5; sort -u; cat /etc/passwd
+--EXPECTED--
+1

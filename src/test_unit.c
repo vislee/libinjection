@@ -1387,6 +1387,9 @@ static void test_ssrf(void)
     ok(! libinjection_ssrf("x=10.internal", 13), "hostname not after slashes");
     ok(! libinjection_ssrf("url=localhosted", 15), "word continuation benign");
     ok(! libinjection_ssrf("x=10.:x", 7), "dot prefix no target benign");
+    ok(! libinjection_ssrf("price=10.5&version=10.04", 25), "decimal not private ip");
+    ok(! libinjection_ssrf("macos=10.5.1", 12), "three-segment version benign");
+    ok(! libinjection_ssrf("screen=192.168.1 size", 21), "two-octet tail benign");
     ok(! libinjection_ssrf("", 0), "empty");
 }
 

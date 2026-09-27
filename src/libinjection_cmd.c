@@ -23,6 +23,7 @@
 
 #define ISALNUM(a) (((unsigned)((a) - '0') <= 9) || \
     ((unsigned)(((a) | 0x20)) - 'a' <= ('z' - 'a')))
+#define ISDIGIT(a) ((unsigned)((a) - '0') <= 9)
 
 static char lower(char c)
 {
@@ -59,6 +60,72 @@ static int is_filler(char c)
     case ' ': case '\t': case '\'': case '"': case '(': case ')':
     case '{': case '}': case '/': case '\\': case '@': case '*':
     case '?': case '#': case '%':
+        return TRUE;
+    default:
+        return FALSE;
+    }
+}
+
+/* common English words on the command list: they only count as
+ * commands with a shell-argument shape after them ("; sleep 5",
+ * "; cat /etc/passwd"), not in prose ("wait; sleep tight") */
+static const char* AMBIGUOUS_WORDS[] = {
+    "cat", "sleep", "head", "tail", "wc", "sort", "uniq", "cut"
+    , "find", "type", "echo", "touch", "net", "make", "tar"
+    , NULL
+};
+
+static int is_ambiguous_word(const char* s, size_t pos, size_t wlen)
+{
+    int i;
+    size_t j;
+    for (i = 0; AMBIGUOUS_WORDS[i] != NULL; ++i) {
+        if (strlen(AMBIGUOUS_WORDS[i]) != wlen) {
+            continue;
+        }
+        if (lower(s[pos]) != AMBIGUOUS_WORDS[i][0]) {
+            continue;
+        }
+        for (j = 1; j < wlen; ++j) {
+            if (lower(s[pos + j]) != AMBIGUOUS_WORDS[i][j]) {
+                break;
+            }
+        }
+        if (j == wlen) {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+/* true when a shell-argument shape (number, flag, path, substitution)
+ * starts at s[end] modulo spaces and quotes */
+static int argument_follows(const char* s, size_t len, size_t end)
+{
+    size_t i = end;
+
+    while (i < len && (s[i] == ' ' || s[i] == '\t' ||
+                       s[i] == '\'' || s[i] == '"')) {
+        i += 1;
+    }
+    if (i >= len) {
+        return FALSE;
+    }
+    if (ISDIGIT(s[i])) {
+        return TRUE;                      /* "; sleep 5" */
+    }
+    /* windows drive path: "type C:\\Windows\\..." */
+    if (((s[i] | 0x20) >= 'a' && (s[i] | 0x20) <= 'z') &&
+        i + 1 < len && s[i + 1] == ':') {
+        return TRUE;
+    }
+    switch (s[i]) {
+    case '-':                             /* "; sort -u" */
+    case '/':                             /* "; cat /etc/passwd" */
+    case '.':                             /* "; cat ./x" */
+    case '~':                             /* "; cat ~/.ssh" */
+    case '$':                             /* "; echo $HOME" */
+    case '`':                             /* "; echo `id`" */
         return TRUE;
     default:
         return FALSE;
@@ -313,6 +380,13 @@ int libinjection_cmd(const char* s, size_t len)
             }
             /* &sort=asc / ;type=x: query-string key, not a command */
             if (i + wlen < len && s[i + wlen] == '=') {
+                continue;
+            }
+            /* common English words need a shell-argument shape after
+             * them ("; sleep 5", "; cat /etc/passwd"), so prose like
+             * "wait; sleep tight" or "red; cat videos" stays benign */
+            if (is_ambiguous_word(s, i, wlen) &&
+                ! argument_follows(s, len, i + wlen)) {
                 continue;
             }
             if (meta_before(s, i) || meta_after(s, len, i + wlen)) {

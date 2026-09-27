@@ -109,13 +109,9 @@ ssti	{{7*7}}
 
 Options: `-c/--classes` pick classes (comma list), `-d/--decode` scan
 URL-decoded input too, `-j/--json` JSON-lines output, `-q/--quiet`
-print matches only, `-F/--fingerprint` include the SQLi fingerprint.
+print matches only, `-F/--fingerprint` include the SQLi fingerprint
+(from the raw layer, or the decoded layer that matched under `-d`).
 Exit codes: `0` no detection, `1` detection found, `2` usage error.
-
-Note: with `-d`, the detection verdict may come from a decoded layer,
-while the `-F` fingerprint is always computed on the raw input — if
-the raw layer does not match on its own, the class is reported without
-a fingerprint.
 
 For bulk corpus scanning use `src/reader` (`--trav`, `--ssrf`, `--deser`,
 `--crlf`, `--cmd`, `--ssti`, `--nosql`, `--ldap`, `--code`, `-x`).
@@ -196,11 +192,11 @@ Public blind tests (payload-box, SecLists, HTTP CSIC 2010 — including
 Known limitations
 -----------------
 
-* **SSRF private-range prefixes** (`10.`, `192.168.`, `172.16.`–
-  `172.31.`) currently match when just a digit follows in a
-  key/value position, so plain decimals like `price=10.5` or a
-  version string `version=10.04` can be flagged.  Known issue; the
-  fix should require the full two-octet shape (`10.x.`).
+* **SSRF private-range prefixes**: decimals and version strings in
+  key/value position (`price=10.5`, `version=10.04`) stay benign; a
+  dotted-quad continuation (`10.x.y.z`) is still required for the
+  private prefixes to fire.  Short-form targets like `127.1` remain
+  signature targets.
 * **SQLi unquoted weak probes** (`select x from y where`, `1,1--`)
   are intentionally whitelisted — upstream considers them
   inseparable from ordinary prose.
@@ -209,8 +205,10 @@ Known limitations
   Jhaddix dict measures ~27% by design
   (see `docs/PUBLIC_DATASET_EVAL.md`).
 * Detectors assume **parameter values**, not free-form text.  `cmd`
-  reads `q=;cat /etc/passwd` well; English prose around words like
-  "sleep" after a semicolon stays a residual risk.
+  reads `q=;cat /etc/passwd` well; common English command words
+  (`sleep`, `cat`, `sort`, ...) only fire when a shell-argument shape
+  follows (`; sleep 5`, `; cat /etc/passwd`), but contrived prose
+  next to metacharacters remains a residual risk.
 
 Repository layout
 -----------------

@@ -7,6 +7,8 @@ html5
 testspeedsqli
 testspeedxss
 testdriver
+injection
+test_unit
 example1
 a.out
 h5
@@ -20,11 +22,6 @@ h5
 *.xml
 *.log
 gmon.out
-
-test_unit
 coverage-data/
 *.profraw
 *.profdata
-*.profraw
-*.profdata
-coverage-data/

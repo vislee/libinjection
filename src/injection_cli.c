@@ -15,6 +15,7 @@
 #include <string.h>
 
 #include "libinjection.h"
+#include "libinjection_sqli.h"
 #include "libinjection_classify.h"
 
 #ifndef TRUE
@@ -183,7 +184,13 @@ static int process(const char* input, size_t len,
     *any_match = TRUE;
 
     if ((found & LIBINJECTION_CLASS_SQLI) && want_fp) {
-        libinjection_sqli(input, len, fingerprint);
+        if (decode) {
+            /* fingerprint from the layer that matched (raw or one of
+             * the decoded ones), consistent with the verdict above */
+            libinjection_sqli_url(input, len, fingerprint);
+        } else {
+            libinjection_sqli(input, len, fingerprint);
+        }
         fpstr = fingerprint;
     }
 
