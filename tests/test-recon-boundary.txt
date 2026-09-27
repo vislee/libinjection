@@ -1,0 +1,6 @@
+--TEST--
+word boundary: needle text inside ordinary words stays benign
+--INPUT--
+environment configuration reload
+--EXPECTED--
+0

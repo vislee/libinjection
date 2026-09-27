@@ -23,6 +23,8 @@
 #include "libinjection_nosql.h"
 #include "libinjection_ldap.h"
 #include "libinjection_code.h"
+#include "libinjection_recon.h"
+#include "libinjection_redirect.h"
 #include "libinjection_normalize.h"
 #include "libinjection_classify.h"
 
@@ -51,6 +53,8 @@ static const struct class_entry CLASS_TABLE[] = {
     , { LIBINJECTION_CLASS_NOSQL, libinjection_nosql }
     , { LIBINJECTION_CLASS_LDAP, libinjection_ldap }
     , { LIBINJECTION_CLASS_CODE, libinjection_code }
+    , { LIBINJECTION_CLASS_RECON, libinjection_recon }
+    , { LIBINJECTION_CLASS_REDIRECT, libinjection_redirect }
     , { 0, NULL }
 };
 

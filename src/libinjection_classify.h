@@ -44,6 +44,8 @@ enum libinjection_attack_class {
     , LIBINJECTION_CLASS_NOSQL = (((libinjection_class_mask_t) 1) << 6)
     , LIBINJECTION_CLASS_LDAP  = (((libinjection_class_mask_t) 1) << 7)
     , LIBINJECTION_CLASS_CODE  = (((libinjection_class_mask_t) 1) << 10)
+    , LIBINJECTION_CLASS_RECON = (((libinjection_class_mask_t) 1) << 11)
+    , LIBINJECTION_CLASS_REDIRECT = (((libinjection_class_mask_t) 1) << 12)
 };
 
 #define LIBINJECTION_CLASS_ALL \
@@ -52,7 +54,8 @@ enum libinjection_attack_class {
      LIBINJECTION_CLASS_DESER | LIBINJECTION_CLASS_CRLF | \
      LIBINJECTION_CLASS_CMD | LIBINJECTION_CLASS_SSTI | \
      LIBINJECTION_CLASS_NOSQL | LIBINJECTION_CLASS_LDAP | \
-     LIBINJECTION_CLASS_CODE)
+     LIBINJECTION_CLASS_CODE | LIBINJECTION_CLASS_RECON | \
+     LIBINJECTION_CLASS_REDIRECT)
 
 /*
  * Runs the wanted detectors on the input as-is.

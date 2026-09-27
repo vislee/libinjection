@@ -1,0 +1,6 @@
+--TEST--
+userinfo trick in absolute redirect target
+--INPUT--
+url=https://login.evil.com@google.com/
+--EXPECTED--
+1

@@ -16,6 +16,8 @@
 #include "libinjection_nosql.h"
 #include "libinjection_ldap.h"
 #include "libinjection_code.h"
+#include "libinjection_recon.h"
+#include "libinjection_redirect.h"
 
 static char g_test[8096];
 static char g_input[8096];
@@ -259,6 +261,10 @@ int read_file(const char* fname, int flags, int testtype)
         sprintf(g_actual, "%d", libinjection_ldap(copy, slen));
     } else if (testtype == 13) {
         sprintf(g_actual, "%d", libinjection_code(copy, slen));
+    } else if (testtype == 14) {
+        sprintf(g_actual, "%d", libinjection_recon(copy, slen));
+    } else if (testtype == 15) {
+        sprintf(g_actual, "%d", libinjection_redirect(copy, slen));
     } else {
         fprintf(stderr, "Got strange testtype value of %d\n", testtype);
         assert(0);
@@ -345,6 +351,12 @@ int main(int argc, char** argv)
         } else if (strstr(fname, "test-code-")) {
             flags = FLAG_NONE;
             testtype = 13;
+        } else if (strstr(fname, "test-recon-")) {
+            flags = FLAG_NONE;
+            testtype = 14;
+        } else if (strstr(fname, "test-redirect-")) {
+            flags = FLAG_NONE;
+            testtype = 15;
         } else {
             fprintf(stderr, "Unknown test type: %s, failing\n", fname);
             count_fail += 1;

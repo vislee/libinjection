@@ -49,6 +49,8 @@ row "SSTI recall: red-team corpus"   --ssti data/redteam-ssti.txt
 row "NOSQL recall: red-team corpus"  --nosql data/redteam-nosql.txt
 row "LDAP recall: red-team corpus"   --ldap data/redteam-ldap.txt
 row "CODE recall: red-team corpus"   --code data/redteam-code.txt
+row "RECON recall: red-team corpus"  --recon data/redteam-recon.txt
+row "REDIRECT recall: red-team corpus" --redirect data/redteam-redirect.txt
 echo "--------------------------------------------------------------------"
 echo "benign corpus                          detected  benign    total  FP-rate"
 echo "--------------------------------------------------------------------"
@@ -77,4 +79,9 @@ fp_row "SSTI FP: benign-p23.txt"         --ssti data/benign-p23.txt
 fp_row "NOSQL FP: benign-p23.txt"        --nosql data/benign-p23.txt
 fp_row "LDAP FP: benign-p23.txt"         --ldap data/benign-p23.txt
 fp_row "CODE FP: benign-p23.txt"         --code data/benign-p23.txt
+fp_row "RECON FP: benign-p23.txt"        --recon data/benign-p23.txt
+fp_row "REDIRECT FP: benign-p23.txt"     --redirect data/benign-p23.txt
+fp_row "RECON FP: false_positives.txt"   --recon data/false_positives.txt
+fp_row "RECON FP: benign-recon.txt"      --recon data/benign-recon.txt
+fp_row "REDIRECT FP: benign-redirect.txt" --redirect data/benign-redirect.txt
 echo "===================================================================="

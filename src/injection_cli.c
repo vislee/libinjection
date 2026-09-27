@@ -44,6 +44,8 @@ static const struct class_def CLASSES[] = {
     , { "nosql", LIBINJECTION_CLASS_NOSQL }
     , { "ldap", LIBINJECTION_CLASS_LDAP }
     , { "code", LIBINJECTION_CLASS_CODE }
+    , { "recon", LIBINJECTION_CLASS_RECON }
+    , { "redirect", LIBINJECTION_CLASS_REDIRECT }
     , { NULL, 0 }
 };
 
@@ -58,7 +60,8 @@ static void usage(int code)
     fputs("  -c, --classes LIST   comma-separated classes to enable\n"
           "                       (default: all)\n", stdout);
     fputs("                       classes: sqli,xss,trav,ssrf,deser,crlf,\n"
-          "                       cmd,ssti,nosql,ldap,code,all\n", stdout);
+          "                       cmd,ssti,nosql,ldap,code,recon,redirect,\n"
+          "                       all\n", stdout);
     fputs("  -d, --decode         also scan URL-decoded input (up to 3\n"
           "                       rounds: defeats double/triple encoding)\n", stdout);
     fputs("  -j, --json           JSON-lines output\n", stdout);

@@ -19,7 +19,7 @@ STATICLIB=lib${LIBNAME}.${STATICLIB_SUFFIX}
 SHAREDLIB_SUFFIX=so
 SHAREDLIB=lib${LIBNAME}.${SHAREDLIB_SUFFIX}
 
-HEADERS=libinjection.h libinjection_sqli.h libinjection_sqli_data.h libinjection_html5.h libinjection_xss.h libinjection_normalize.h libinjection_classify.h libinjection_trav.h libinjection_ssrf.h libinjection_deser.h libinjection_crlf.h libinjection_cmd.h libinjection_ssti.h libinjection_nosql.h libinjection_ldap.h libinjection_code.h
+HEADERS=libinjection.h libinjection_sqli.h libinjection_sqli_data.h libinjection_html5.h libinjection_xss.h libinjection_normalize.h libinjection_classify.h libinjection_trav.h libinjection_ssrf.h libinjection_deser.h libinjection_crlf.h libinjection_cmd.h libinjection_ssti.h libinjection_nosql.h libinjection_ldap.h libinjection_code.h libinjection_recon.h libinjection_redirect.h
 
 SOURCES=libinjection_sqli.c \
 	libinjection_html5.c \
@@ -34,7 +34,9 @@ SOURCES=libinjection_sqli.c \
 	libinjection_ssti.c \
 	libinjection_nosql.c \
 	libinjection_ldap.c \
-	libinjection_code.c
+	libinjection_code.c \
+	libinjection_recon.c \
+	libinjection_redirect.c
 
 OBJECTS=libinjection_sqli.o \
 	libinjection_html5.o \
@@ -49,7 +51,9 @@ OBJECTS=libinjection_sqli.o \
 	libinjection_ssti.o \
 	libinjection_nosql.o \
 	libinjection_ldap.o \
-	libinjection_code.o
+	libinjection_code.o \
+	libinjection_recon.o \
+	libinjection_redirect.o
 
 SAMPLES=html5 sqli fptool injection
 TESTDRIVERS=reader testdriver testspeedxss testspeedsqli test_unit
@@ -87,7 +91,7 @@ libinjection_html5.o: libinjection.h libinjection_html5.c libinjection_html5.h
 libinjection_normalize.o: libinjection.h libinjection_normalize.c libinjection_normalize.h
 	${CC} ${CFLAGS} -c -o libinjection_normalize.o libinjection_normalize.c
 
-libinjection_classify.o: libinjection.h libinjection_classify.c libinjection_classify.h libinjection_normalize.h libinjection_sqli.h libinjection_xss.h libinjection_trav.h libinjection_ssrf.h libinjection_deser.h libinjection_crlf.h libinjection_cmd.h libinjection_ssti.h libinjection_nosql.h libinjection_ldap.h libinjection_code.h
+libinjection_classify.o: libinjection.h libinjection_classify.c libinjection_classify.h libinjection_normalize.h libinjection_sqli.h libinjection_xss.h libinjection_trav.h libinjection_ssrf.h libinjection_deser.h libinjection_crlf.h libinjection_cmd.h libinjection_ssti.h libinjection_nosql.h libinjection_ldap.h libinjection_code.h libinjection_recon.h libinjection_redirect.h
 	${CC} ${CFLAGS} -c -o libinjection_classify.o libinjection_classify.c
 
 libinjection_trav.o: libinjection_trav.h libinjection_trav.c
@@ -117,6 +121,12 @@ libinjection_ldap.o: libinjection_ldap.h libinjection_ldap.c
 libinjection_code.o: libinjection_code.h libinjection_code.c
 	${CC} ${CFLAGS} -c -o libinjection_code.o libinjection_code.c
 
+libinjection_recon.o: libinjection_recon.h libinjection_recon.c
+	${CC} ${CFLAGS} -c -o libinjection_recon.o libinjection_recon.c
+
+libinjection_redirect.o: libinjection_redirect.h libinjection_redirect.c
+	${CC} ${CFLAGS} -c -o libinjection_redirect.o libinjection_redirect.c
+
 ${SHAREDLIB}: ${OBJECTS}
 	$(CC) $+ -shared -lc -o $@
 
@@ -140,7 +150,9 @@ check: ${TESTDRIVERS}
 	              ../tests/test-ssti-*.txt \
 	              ../tests/test-nosql-*.txt \
 	              ../tests/test-ldap-*.txt \
-	              ../tests/test-code-*.txt
+	              ../tests/test-code-*.txt \
+	              ../tests/test-recon-*.txt \
+	              ../tests/test-redirect-*.txt
 	@./test-driver.sh test-unit.sh
 	@./test-driver.sh test-samples-sqli-negative.sh
 	@./test-driver.sh test-samples-sqli-positive.sh

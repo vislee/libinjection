@@ -1,0 +1,6 @@
+--TEST--
+plain internal path is not an open redirect payload
+--INPUT--
+next=%2Fdetail%2F123
+--EXPECTED--
+0

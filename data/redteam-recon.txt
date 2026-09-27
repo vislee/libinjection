@@ -1,0 +1,55 @@
+sqlmap/1.5.2#stable (http://sqlmap.org)
+Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; Nikto/2.1.6)
+Nessus Vulnerability Scanner
+OpenVAS Scanner 21.4
+acunetix-wvs-test-for-some-injections
+Mozilla/5.0 (compatible; Netsparker)
+IBM AppScan
+arachni/1.6
+w3af.sourceforge.net
+Havij pro
+DirBuster-1.0-RC1
+gobuster/3.1
+wfuzz/2.4
+ffuf v1.5.0
+masscan/1.3
+zgrab/0.1
+WhatWeb/0.5
+wpscan v3.8
+Burp Suite Professional
+paros/3.2.13
+qualysguard scan probe
+/etc/passwd
+/etc/shadow
+/proc/self/environ
+/windows/win.ini
+c:\boot.ini
+web.config.bak
+site/.htaccess
+.git/config
+.svn/entries
+.aws/credentials
+.DS_Store
+.bash_history
+.ssh/id_rsa
+download.php?f=.env
+.mysql_history
+backup/dump.sql
+phpinfo.php
+wso.php?cmd=id
+uploads/c99.php
+r57.php
+b374k.php
+phpspy.php
+shell.asp
+cmd.jsp
+alfa.php
+/admin/phpmyadmin/index.php
+/actuator/env
+/manager/html
+/wp-login.php
+/adminer.php
+/druid/index.html
+/console/login
+/jenkins/script
+/solr/admin/

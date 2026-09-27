@@ -1,0 +1,8 @@
+path=/detail/123
+next=/checkout/step2
+returnUrl=http://internal-portal.local/login
+url=https://example.com/safe
+q=search+redirect+terms
+goto=//comment-not-a-host
+cb=https://api.vendor.io/v1
+redirect_after_login=/account

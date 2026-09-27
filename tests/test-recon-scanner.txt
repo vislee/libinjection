@@ -1,0 +1,6 @@
+--TEST--
+scanner fingerprint in user agent value
+--INPUT--
+ua=sqlmap/1.5.2#stable
+--EXPECTED--
+1

@@ -1,0 +1,6 @@
+--TEST--
+script scheme uri in redirect parameter
+--INPUT--
+q=javascript:alert(1)
+--EXPECTED--
+1

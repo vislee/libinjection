@@ -1,0 +1,12 @@
+javascript:alert(1)
+q=javascript:alert(document.cookie)
+JAVASCRIPT:jAvascript:alert(1)
+vbscript:msgbox("x")
+data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==
+data:application/x-x509-ca-cert;base64,AAAA
+next=//evil.com/callback
+redirect=//evil.com
+returnUrl=///evil.com
+url=https://login.evil.com@google.com/
+goto=http://trusted.com@evil.com/pay
+out=https://x.com:pass@evil.example/

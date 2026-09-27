@@ -28,6 +28,8 @@
 #include "libinjection_nosql.h"
 #include "libinjection_ldap.h"
 #include "libinjection_code.h"
+#include "libinjection_recon.h"
+#include "libinjection_redirect.h"
 
 static int g_count = 0;
 static int g_fail = 0;
@@ -1448,9 +1450,9 @@ static void test_classify_p1(void)
     ok(libinjection_classify("%0d%0aSet-Cookie:%20x=1", 23,
                              LIBINJECTION_CLASS_ALL) == LIBINJECTION_CLASS_CRLF,
        "classify crlf");
-    ok(libinjection_classify_url("%2e%2e%2f%2e%2e%2fetc%2fpasswd", 30,
-                                 LIBINJECTION_CLASS_ALL) ==
-       LIBINJECTION_CLASS_TRAV,
+    ok((libinjection_classify_url("%2e%2e%2f%2e%2e%2fetc%2fpasswd", 30,
+                                 LIBINJECTION_CLASS_ALL) &
+        LIBINJECTION_CLASS_TRAV) != 0,
        "classify_url decodes trav");
 }
 
@@ -1555,6 +1557,45 @@ static void test_code(void)
     ok(! libinjection_code("<?xml version=\"1.0\"?>", 21), "xml benign");
     ok(! libinjection_code("the system handles it", 21), "system prose benign");
     ok(! libinjection_code("", 0), "empty");
+
+    /* recon: scanner fingerprints */
+    ok(libinjection_recon("ua=sqlmap/1.5.2#stable", 21), "sqlmap ua");
+    ok(libinjection_recon("Mozilla/5.0 Nikto/2.1.6", 23), "nikto ua");
+    ok(libinjection_recon("acunetix-wvs-test", 17), "acunetix probe");
+    ok(libinjection_recon("agent=Wfuzz 2.4", 15), "wfuzz ua");
+    /* recon: sensitive files and webshells */
+    ok(libinjection_recon("q=/etc/passwd", 13), "etc passwd");
+    ok(libinjection_recon("f=web.config.bak", 16), "web config bak");
+    ok(libinjection_recon("download.php?f=.env", 19), "dotenv probe");
+    ok(libinjection_recon("uploads/wso.php?cmd=id", 22), "wso shell");
+    ok(libinjection_recon("c:\\boot.ini", 11), "boot ini win");
+    /* recon: admin panels */
+    ok(libinjection_recon("/admin/phpmyadmin/", 18), "phpmyadmin probe");
+    ok(libinjection_recon("/actuator/env", 13), "actuator probe");
+    /* recon: word boundaries keep prose benign */
+    ok(! libinjection_recon("environment variable", 20), "environment benign");
+    ok(! libinjection_recon("maps and directions", 19), "maps benign");
+    ok(! libinjection_recon("django.contrib.admin.site", 25), "django admin benign");
+    ok(! libinjection_recon("", 0), "recon empty");
+
+    /* redirect: script schemes */
+    ok(libinjection_redirect("javascript:alert(1)", 18), "javascript bare");
+    ok(libinjection_redirect("q=javascript:alert(1)", 21), "javascript kv");
+    ok(libinjection_redirect("vbscript:msgbox(1)", 18), "vbscript");
+    ok(libinjection_redirect("data:text/html,<script>", 23), "data html");
+    /* redirect: protocol-relative and userinfo */
+    ok(libinjection_redirect("next=//evil.com/cb", 18), "protocol relative");
+    ok(libinjection_redirect("returnUrl=///evil.com", 21), "triple slash");
+    ok(libinjection_redirect("url=https://x:pass@evil.com/", 28), "userinfo https");
+    ok(libinjection_redirect("goto=http://t.com@evil.com/", 27), "userinfo http");
+    /* redirect: base64 padding must not break value detection */
+    ok(libinjection_redirect("data:text/html;base64,PT4=", 26), "data base64 eq");
+    /* redirect: benign shapes */
+    ok(! libinjection_redirect("next=/detail/123", 16), "internal path");
+    ok(! libinjection_redirect("path=/usr/share/doc", 19), "usr path");
+    ok(! libinjection_redirect("goto=//comment-not-a-host", 25), "slash comment benign");
+    ok(! libinjection_redirect("cb=https://api.vendor.io/v1", 27), "vendor url benign");
+    ok(! libinjection_redirect("", 0), "redirect empty");
 }
 
 static void test_classify_p23(void)

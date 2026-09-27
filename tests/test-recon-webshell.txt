@@ -1,0 +1,6 @@
+--TEST--
+webshell path probe
+--INPUT--
+uploads/wso.php?cmd=id
+--EXPECTED--
+1

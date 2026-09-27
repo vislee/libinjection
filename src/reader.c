@@ -15,6 +15,8 @@
 #include "libinjection_nosql.h"
 #include "libinjection_ldap.h"
 #include "libinjection_code.h"
+#include "libinjection_recon.h"
+#include "libinjection_redirect.h"
 
 #ifndef TRUE
 #define TRUE 1
@@ -37,7 +39,9 @@ typedef enum {
     MODE_SSTI,
     MODE_NOSQL,
     MODE_LDAP,
-    MODE_CODE
+    MODE_CODE,
+    MODE_RECON,
+    MODE_REDIRECT
 } detect_mode_t;
 
 static void usage(const char* argv[]);
@@ -198,6 +202,14 @@ void test_positive(FILE * fd, const char *fname, detect_mode_t mode,
             issqli = libinjection_code(linebuf, len);
             break;
         }
+        case MODE_RECON: {
+            issqli = libinjection_recon(linebuf, len);
+            break;
+        }
+        case MODE_REDIRECT: {
+            issqli = libinjection_redirect(linebuf, len);
+            break;
+        }
         default:
             assert(0);
        }
@@ -241,7 +253,9 @@ void test_positive(FILE * fd, const char *fname, detect_mode_t mode,
                 case MODE_SSTI:
                 case MODE_NOSQL:
                 case MODE_LDAP:
-                case MODE_CODE: {
+                case MODE_CODE:
+                case MODE_RECON:
+                case MODE_REDIRECT: {
                     fprintf(stdout, "%s\t%d\t%s\t%s\n",
                             fname, linenum,
                             (issqli ? "True" : "False"), linebuf);
@@ -361,6 +375,12 @@ int main(int argc, const char *argv[])
             offset += 1;
         } else if (strcmp(argv[offset], "--code") == 0) {
             mode = MODE_CODE;
+            offset += 1;
+        } else if (strcmp(argv[offset], "--recon") == 0) {
+            mode = MODE_RECON;
+            offset += 1;
+        } else if (strcmp(argv[offset], "--redirect") == 0) {
+            mode = MODE_REDIRECT;
             offset += 1;
         } else {
             break;

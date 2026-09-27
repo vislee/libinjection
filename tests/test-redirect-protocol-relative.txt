@@ -1,0 +1,6 @@
+--TEST--
+protocol-relative open redirect target
+--INPUT--
+next=//evil.com/callback
+--EXPECTED--
+1

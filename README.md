@@ -4,7 +4,7 @@ libinjection
 **libinjection** is a small, fast, zero-dependency C library that detects
 injection attacks inside a single string (typically one HTTP parameter
 value).  This fork extends the original SQLi/XSS engine to
-**11 attack classes** covering the input-detectable subset of
+**13 attack classes** covering the input-detectable subset of
 [OWASP Top 10](https://owasp.org/Top10/).
 
 Supported attack classes
@@ -23,6 +23,8 @@ Supported attack classes
 | nosql  | `LIBINJECTION_CLASS_NOSQL`    | MongoDB operator / boolean injection                 | A03   |
 | ldap   | `LIBINJECTION_CLASS_LDAP`     | LDAP filter and XPath injection                      | A03   |
 | code   | `LIBINJECTION_CLASS_CODE`     | server-side code probes (`<?php`, `eval("...")`)     | A03   |
+| recon  | `LIBINJECTION_CLASS_RECON`    | scanner fingerprints, sensitive-file/webshell/admin-panel probes | A05/A06 |
+| redirect | `LIBINJECTION_CLASS_REDIRECT` | open-redirect payload shapes (script URIs, `//host`, userinfo) | A01 |
 
 API
 ---
@@ -40,6 +42,8 @@ int   libinjection_ssti  (const char* s, size_t len);
 int   libinjection_nosql (const char* s, size_t len);
 int   libinjection_ldap  (const char* s, size_t len);
 int   libinjection_code  (const char* s, size_t len);
+int   libinjection_recon (const char* s, size_t len);
+int   libinjection_redirect(const char* s, size_t len);
 
 /* all classes in one call, one bitmask back */
 libinjection_class_mask_t
@@ -121,7 +125,7 @@ Build and test
 
 ```sh
 make                # builds libinjection.a, libinjection.so, samples in src/
-make -C src check   # 450 API checks + 520 data fixtures + 4 sample corpora
+make -C src check   # 482 API checks + 536 data fixtures + 4 sample corpora
 make benchmark      # recall / false-positive report over all corpora
 make coverage       # clang coverage report, fails below 95% lines
 make clean          # also removes src/coverage-data/
@@ -133,7 +137,7 @@ python3 scripts/eval_public_datasets.py  # baseline 3.9.2 vs current
 
 `make check` runs, in order: the `injection` CLI smoke test
 (`src/test-cli.sh`), the API unit tests (`src/test_unit.c`, prints
-"450 checks, 0 failures"), the data-driven fixtures in `tests/`
+"482 checks, 0 failures"), the data-driven fixtures in `tests/`
 (`--INPUT--`/`--EXPECTED--` format via `src/testdriver`), and the
 upstream sample corpora in `data/`.  `make coverage` needs clang plus
 `llvm-profdata`/`llvm-cov` (macOS: Xcode toolchain; Linux: install
@@ -142,7 +146,7 @@ upstream sample corpora in `data/`.  `make coverage` needs clang plus
 Detection design
 ----------------
 
-The eleven modules are built from three kinds of rules:
+The thirteen modules are built from three kinds of rules:
 
 * **Tokenizer engines** — `sqli` folds the input into at most five
   tokens and matches a fingerprint grammar (`libinjection_sqli_data.h`);
@@ -151,10 +155,10 @@ The eleven modules are built from three kinds of rules:
   and the style-attribute content check with shape-specific
   suppressors, each anchored by a regression fixture in `tests/`.
 * **Needle + context rules** — `trav`, `ssrf`, `deser`, `crlf`,
-  `ldap`, `code`, `ssti`, `nosql`.  A payload word only fires in an
-  attack-shaped position (URL shape, `)(` LDAP filter boundary, header
-  marker after CRLF, `{{`/`${` marker window, ...), which keeps normal
-  prose and ordinary query strings quiet.
+  `ldap`, `code`, `ssti`, `nosql`, `recon`.  A payload word only fires
+  in an attack-shaped position (URL shape, `)(` LDAP filter boundary,
+  header marker after CRLF, `{{`/`${` marker window, word boundary,
+  ...), which keeps normal prose and ordinary query strings quiet.
 * **Adjacency rules** — `cmd` fires only when a shell metacharacter is
   directly adjacent (through quote/brace filler) to a known command
   word, or the word sits inside `$( )` / backticks.  `&key=value`
@@ -177,16 +181,17 @@ version 4.0.0):
 | SQLi official (`data/sqli-*.txt`) | 99.98% |
 | XSS official (`data/xss-*.txt`) | 99.10% |
 | SQLi / XSS red-team (`data/redteam-*.txt`) | 96.7% / 100% |
-| TRAV, SSRF, DESER, CRLF, CMD, SSTI, NOSQL, LDAP, CODE red-team | 100% each |
+| TRAV, SSRF, DESER, CRLF, CMD, SSTI, NOSQL, LDAP, CODE, RECON, REDIRECT red-team | 100% each |
 
 | corpus (benign) | false positives |
 |---|---|
 | `data/false_positives.txt`, SQLi | 3.80% (known, quoted prose — see limitations) |
 | `data/false_positives.txt`, XSS | 0 |
-| `data/redteam-benign.txt`, `data/benign-p1.txt`, `data/benign-p23.txt`, all 11 classes | 0 |
+| `data/redteam-benign.txt`, `data/benign-p1.txt`, `data/benign-p23.txt`, all 13 classes | 0 |
+| `data/benign-recon.txt`, `data/benign-redirect.txt` | 0 |
 
 Public blind tests (payload-box, SecLists, HTTP CSIC 2010 — including
-36k benign requests, 0 FP across all eleven classes) are documented in
+36k benign requests, 0 FP across all injection classes) are documented in
 `docs/PUBLIC_DATASET_EVAL.md`.
 
 Known limitations
@@ -214,10 +219,10 @@ Repository layout
 -----------------
 
     src/                     library sources + drivers
-      libinjection_*.c/.h    eleven detectors + normalize/classify layers
+      libinjection_*.c/.h    thirteen detectors + normalize/classify layers
       injection_cli.c        unified CLI (built as src/injection)
       reader.c               corpus scanner used by benchmark/coverage
-      test_unit.c            API unit tests (450 checks)
+      test_unit.c            API unit tests (482 checks)
       test-cli.sh            CLI smoke tests
     tests/                   data-driven fixtures (--INPUT--/--EXPECTED--)
     data/                    upstream samples + red-team + benign corpora

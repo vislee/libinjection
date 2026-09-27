@@ -1,0 +1,6 @@
+--TEST--
+sensitive file probe in query value
+--INPUT--
+download.php?f=.env
+--EXPECTED--
+1
