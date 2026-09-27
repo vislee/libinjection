@@ -4,9 +4,56 @@
 # benign corpora.  Verifies the >=95% precision/recall targets from
 # docs/OPTIMIZATION_PLAN.md.
 #
+# With --check, exits non-zero when any release gate is violated
+# (used by CI; mirrors docs/RELEASE_GATES.md).
+#
 set -e
 cd "$(dirname "$0")"
 READER=src/reader
+
+CHECK=0
+if [ "${1:-}" = "--check" ]; then
+    CHECK=1
+fi
+
+GATE_FAIL=0
+
+gate_recall() {
+    label=$1
+    minrate=$2
+    shift 2
+    res=$(counts "$@")
+    det=${res%% *}
+    tot=${res##* }
+    if [ "$tot" -eq 0 ]; then
+        echo "GATE FAIL: no samples for '$label'" >&2
+        GATE_FAIL=1
+        return
+    fi
+    rate=$(awk -v a="$det" -v t="$tot" 'BEGIN {printf "%.2f", 100*a/t}')
+    ok=$(awk -v r="$rate" -v m="$minrate" 'BEGIN {print (r+0 >= m+0) ? 1 : 0}')
+    if [ "$ok" -eq 1 ]; then
+        printf "GATE ok   %-38s %s%% (>= %s%%)\n" "$label" "$rate" "$minrate"
+    else
+        printf "GATE FAIL %-38s %s%% (>= %s%%)\n" "$label" "$rate" "$minrate" >&2
+        GATE_FAIL=1
+    fi
+}
+
+gate_fp() {
+    label=$1
+    maxfp=$2
+    shift 2
+    res=$(counts "$@")
+    det=${res%% *}
+    tot=${res##* }
+    if [ "$det" -gt "$maxfp" ]; then
+        printf "GATE FAIL %-38s %s FP (<= %s)\n" "$label" "$det" "$maxfp" >&2
+        GATE_FAIL=1
+    else
+        printf "GATE ok   %-38s %s FP (<= %s)\n" "$label" "$det" "$maxfp"
+    fi
+}
 
 # counts READER-ARGS... : prints "detected total" from reader stats
 counts() {
@@ -85,3 +132,34 @@ fp_row "RECON FP: false_positives.txt"   --recon data/false_positives.txt
 fp_row "RECON FP: benign-recon.txt"      --recon data/benign-recon.txt
 fp_row "REDIRECT FP: benign-redirect.txt" --redirect data/benign-redirect.txt
 echo "===================================================================="
+
+if [ "$CHECK" -eq 1 ]; then
+    echo ""
+    echo "release gates (docs/RELEASE_GATES.md):"
+    gate_recall "sqli official recall"      99.5  -i -m 999999 data/sqli-*.txt
+    gate_recall "xss official recall"       98.0  -i -m 999999 -x data/xss-*.txt
+    gate_recall "redteam sqli recall"       95.0  data/redteam-sqli.txt
+    gate_recall "redteam xss recall"        99.0  -x data/redteam-xss.txt
+    gate_recall "redteam trav recall"       100   --trav  data/redteam-trav.txt
+    gate_recall "redteam ssrf recall"       100   --ssrf  data/redteam-ssrf.txt
+    gate_recall "redteam deser recall"      100   --deser data/redteam-deser.txt
+    gate_recall "redteam crlf recall"       100   --crlf  data/redteam-crlf.txt
+    gate_recall "redteam cmd recall"        100   --cmd   data/redteam-cmd.txt
+    gate_recall "redteam ssti recall"       100   --ssti  data/redteam-ssti.txt
+    gate_recall "redteam nosql recall"      100   --nosql data/redteam-nosql.txt
+    gate_recall "redteam ldap recall"       100   --ldap  data/redteam-ldap.txt
+    gate_recall "redteam code recall"       100   --code  data/redteam-code.txt
+    gate_recall "redteam recon recall"      100   --recon data/redteam-recon.txt
+    gate_recall "redteam redirect recall"   100   --redirect data/redteam-redirect.txt
+    gate_fp "sqli fp corpus"                17    data/false_positives.txt
+    gate_fp "redteam-benign (all classes)"  0     data/redteam-benign.txt
+    gate_fp "benign-p1"                     0     data/benign-p1.txt
+    gate_fp "benign-p23"                    0     data/benign-p23.txt
+    gate_fp "benign-recon"                  0     --recon data/benign-recon.txt
+    gate_fp "benign-redirect"               0     --redirect data/benign-redirect.txt
+    if [ "$GATE_FAIL" -ne 0 ]; then
+        echo "RELEASE GATES: FAILED" >&2
+        exit 1
+    fi
+    echo "RELEASE GATES: PASSED"
+fi

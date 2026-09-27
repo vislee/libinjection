@@ -7,6 +7,8 @@ check:  ## run tests
 	(cd src; ${MAKE} check)
 benchmark:  ## detection recall / false-positive benchmark
 	./run-benchmark.sh
+benchmark-check:  ## benchmark + release gates (non-zero exit on violation)
+	./run-benchmark.sh --check
 coverage:  ## measure line coverage (requires clang + llvm-cov), 95% gate
 	./run-coverage.sh
 clean:  ## clean up
@@ -14,7 +16,7 @@ clean:  ## clean up
 	rm -rf src/coverage-data
 	git gc --aggressive
 
-.PHONY: all check benchmark coverage clean
+.PHONY: all check benchmark benchmark-check coverage clean
 
 docker-console:  ## log into the docker test image
 	docker run --rm -it \

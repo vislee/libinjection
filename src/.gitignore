@@ -25,3 +25,6 @@ gmon.out
 coverage-data/
 *.profraw
 *.profdata
+libinjection.so
+libinjection.so.*
+libinjection.*.dylib

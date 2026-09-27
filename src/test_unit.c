@@ -110,7 +110,7 @@ static void test_version(void)
 {
     group("version");
     ok(libinjection_version() != NULL, "version() non-null");
-    ok_str(libinjection_version(), "4.0.0", "version string");
+    ok_str(libinjection_version(), "4.1.0", "version string");
 }
 
 /*

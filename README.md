@@ -124,9 +124,10 @@ Build and test
 --------------
 
 ```sh
-make                # builds libinjection.a, libinjection.so, samples in src/
+make                # builds libinjection.{a,so/dylib} (soname'd), samples in src/
 make -C src check   # 482 API checks + 536 data fixtures + 4 sample corpora
 make benchmark      # recall / false-positive report over all corpora
+make benchmark-check  # same + release gates; non-zero exit on violation
 make coverage       # clang coverage report, fails below 95% lines
 make clean          # also removes src/coverage-data/
 

@@ -1,0 +1,120 @@
+# CI for libinjection: strict builds, sanitizers, full test suite,
+# release gates and a fuzz smoke run.
+#
+# Docs: docs/RELEASE_GATES.md (gate thresholds mirrored in
+# run-benchmark.sh --check).
+
+name: ci
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  strict-build-and-tests:
+    name: ${{ matrix.os }} / ${{ matrix.cc }} strict
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            cc: gcc
+          - os: ubuntu-latest
+            cc: clang
+          - os: macos-latest
+            cc: clang
+    env:
+      CC: ${{ matrix.cc }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: build (ansi pedantic Werror) + shared lib
+        run: |
+          cd src
+          make clean
+          make all
+          ls libinjection.so.13* libinjection.*.dylib 2>/dev/null | head -4
+
+      - name: install to prefix + verify
+        run: |
+          cd src
+          make install PREFIX=/tmp/libinjection-install
+          test -f /tmp/libinjection-install/lib/libinjection.a
+          test -f /tmp/libinjection-install/include/libinjection.h
+          ls /tmp/libinjection-install/lib/
+
+      - name: full test suite (make check)
+        run: make -C src check
+
+      - name: release gates (benchmark --check)
+        run: ./run-benchmark.sh --check
+
+  sanitizers:
+    name: asan+ubsan
+    runs-on: ubuntu-latest
+    env:
+      CC: clang
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: build with sanitizers
+        run: |
+          cd src
+          make clean
+          make CFLAGS="-Wall -Wextra -Werror -pedantic -ansi -g -O1 -fPIC -fsanitize=address,undefined -fno-omit-frame-pointer" \
+               libinjection.a injection testdriver test_unit reader
+
+      - name: unit + fixtures under sanitizers
+        run: |
+          cd src
+          ./test_unit
+          ./testdriver -q ../tests/test-*.txt
+
+      - name: corpora sweep under sanitizers
+        run: |
+          cd src
+          ./reader -q ../data/redteam-*.txt > /dev/null
+          ./reader -q ../data/benign-*.txt > /dev/null
+          ./reader -q ../data/false_positives.txt > /dev/null
+          ./injection -q < ../data/benign-p1.txt > /dev/null
+          ./injection -q -d < ../data/redteam-benign.txt > /dev/null
+
+  fuzz-smoke:
+    name: fuzz smoke (2 min)
+    runs-on: ubuntu-latest
+    env:
+      CC: clang
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: build libFuzzer target
+        run: |
+          cd src
+          clang -g -O1 -fsanitize=fuzzer,address -fno-omit-frame-pointer \
+            -I. libinjection_sqli.c libinjection_html5.c \
+            libinjection_xss.c libinjection_normalize.c \
+            libinjection_classify.c libinjection_trav.c \
+            libinjection_ssrf.c libinjection_deser.c \
+            libinjection_crlf.c libinjection_cmd.c \
+            libinjection_ssti.c libinjection_nosql.c \
+            libinjection_ldap.c libinjection_code.c \
+            libinjection_recon.c libinjection_redirect.c \
+            tests-fuzz/fuzz_classify.c -o fuzz_classify
+
+      - name: seed corpus
+        run: |
+          mkdir -p /tmp/fuzz-corpus
+          cp data/redteam-*.txt /tmp/fuzz-corpus/ 2>/dev/null || true
+          i=0
+          while IFS= read -r line; do
+            i=$((i+1))
+            printf '%s' "$line" > /tmp/fuzz-corpus/seed-$i
+          done < data/redteam-sqli.txt
+
+      - name: fuzz (120s, no crash allowed)
+        run: |
+          cd src
+          ./fuzz_classify -max_total_time=120 -max_len=4096 \
+            -print_final_stats=1 /tmp/fuzz-corpus

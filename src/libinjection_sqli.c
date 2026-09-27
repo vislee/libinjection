@@ -19,7 +19,11 @@
 #include "libinjection_normalize.h"
 #include "libinjection_sqli_data.h"
 
-#define LIBINJECTION_VERSION "4.0.0"
+/*
+ * Release version (semantic, single source of truth; the git tag is
+ * v<value>).  Keep libinjection.h's doc comment in sync.
+ */
+#define LIBINJECTION_VERSION "4.1.0"
 
 #define LIBINJECTION_SQLI_TOKEN_SIZE  sizeof(((stoken_t*)(0))->val)
 #define LIBINJECTION_SQLI_MAX_TOKENS  5

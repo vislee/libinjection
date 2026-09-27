@@ -11,6 +11,13 @@ set -e
 ROOT=$(cd "$(dirname "$0")" && pwd)
 cd "$ROOT"
 
+# llvm tools: macOS wraps them in xcrun, Linux installs them directly
+if command -v xcrun > /dev/null 2>&1 && xcrun -f llvm-profdata > /dev/null 2>&1; then
+    LLVM() { xcrun "$@"; }
+else
+    LLVM() { "$@"; }
+fi
+
 PROFDIR=src/coverage-data
 PROFDATA=$ROOT/$PROFDIR/libinjection.profdata
 TARGET=95
@@ -33,20 +40,22 @@ export LLVM_PROFILE_FILE="$ROOT/$PROFDIR/full-%p.profraw"
   ./reader -q ../data/redteam-*.txt > /dev/null 2>&1
 )
 
-xcrun llvm-profdata merge -sparse "$ROOT/$PROFDIR"/full-*.profraw \
+LLVM llvm-profdata merge -sparse "$ROOT/$PROFDIR"/full-*.profraw \
     -o "$PROFDATA"
 
-echo "== coverage report (library sources)"
-xcrun llvm-cov report src/test_unit -instr-profile="$PROFDATA" \
-    src/libinjection_sqli.c src/libinjection_html5.c src/libinjection_xss.c src/libinjection_normalize.c src/libinjection_classify.c src/libinjection_trav.c src/libinjection_ssrf.c src/libinjection_deser.c src/libinjection_crlf.c src/libinjection_cmd.c src/libinjection_ssti.c src/libinjection_nosql.c src/libinjection_ldap.c src/libinjection_code.c
+COVERAGE_SOURCES="src/libinjection_sqli.c src/libinjection_html5.c src/libinjection_xss.c src/libinjection_normalize.c src/libinjection_classify.c src/libinjection_trav.c src/libinjection_ssrf.c src/libinjection_deser.c src/libinjection_crlf.c src/libinjection_cmd.c src/libinjection_ssti.c src/libinjection_nosql.c src/libinjection_ldap.c src/libinjection_code.c src/libinjection_recon.c src/libinjection_redirect.c"
 
-TOTAL=$(xcrun llvm-cov report src/test_unit -instr-profile="$PROFDATA" \
-    src/libinjection_sqli.c src/libinjection_html5.c src/libinjection_xss.c src/libinjection_normalize.c src/libinjection_classify.c src/libinjection_trav.c src/libinjection_ssrf.c src/libinjection_deser.c src/libinjection_crlf.c src/libinjection_cmd.c src/libinjection_ssti.c src/libinjection_nosql.c src/libinjection_ldap.c src/libinjection_code.c \
+echo "== coverage report (library sources)"
+LLVM llvm-cov report src/test_unit -instr-profile="$PROFDATA" \
+    $COVERAGE_SOURCES
+
+TOTAL=$(LLVM llvm-cov report src/test_unit -instr-profile="$PROFDATA" \
+    $COVERAGE_SOURCES \
     | awk '/^TOTAL/ {print $10}')
 
 # emit an annotated copy for uncovered-code analysis
-xcrun llvm-cov show src/test_unit -instr-profile="$PROFDATA" \
-    src/libinjection_sqli.c src/libinjection_html5.c src/libinjection_xss.c src/libinjection_normalize.c src/libinjection_classify.c src/libinjection_trav.c src/libinjection_ssrf.c src/libinjection_deser.c src/libinjection_crlf.c src/libinjection_cmd.c src/libinjection_ssti.c src/libinjection_nosql.c src/libinjection_ldap.c src/libinjection_code.c \
+LLVM llvm-cov show src/test_unit -instr-profile="$PROFDATA" \
+    $COVERAGE_SOURCES \
     > "$ROOT/$PROFDIR/coverage-show.txt" 2>/dev/null || true
 
 echo

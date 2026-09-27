@@ -18,6 +18,23 @@ STATICLIB=lib${LIBNAME}.${STATICLIB_SUFFIX}
 
 SHAREDLIB_SUFFIX=so
 SHAREDLIB=lib${LIBNAME}.${SHAREDLIB_SUFFIX}
+# ABI version: bump on any breaking API/ABI change (major.so.ABI)
+LIBRARY_VERSION=13
+
+# platform-shared-library naming: ELF soname on Linux, install_name
+# dylib on macOS
+UNAME_S := $(shell uname -s 2>/dev/null || echo Linux)
+ifeq ($(UNAME_S),Darwin)
+SHAREDTARGET = lib${LIBNAME}.${LIBRARY_VERSION}.4.1.0.dylib
+SHAREDFLAGS  = -dynamiclib -Wl,-install_name,${LIB_DIR}/lib${LIBNAME}.${LIBRARY_VERSION}.dylib
+POSTBUILD    = ln -sf ${SHAREDTARGET} lib${LIBNAME}.${LIBRARY_VERSION}.dylib && ln -sf lib${LIBNAME}.${LIBRARY_VERSION}.dylib ${SHAREDLIB}lib${LIBNAME}.dylib
+INSTALL_LINKS= ln -sf lib${LIBNAME}.${LIBRARY_VERSION}.4.1.0.dylib ${LIB_DIR}/lib${LIBNAME}.${LIBRARY_VERSION}.dylib && ln -sf lib${LIBNAME}.${LIBRARY_VERSION}.dylib ${LIB_DIR}/lib${LIBNAME}.dylib
+else
+SHAREDTARGET = ${SHAREDLIB}.${LIBRARY_VERSION}.4.1.0
+SHAREDFLAGS  = -shared -Wl,-soname,${SHAREDLIB}.${LIBRARY_VERSION}
+POSTBUILD    = ln -sf ${SHAREDTARGET} ${SHAREDLIB}.${LIBRARY_VERSION} && ln -sf ${SHAREDLIB}.${LIBRARY_VERSION} ${SHAREDLIB}
+INSTALL_LINKS= ln -sf libinjection.so.${LIBRARY_VERSION}.4.1.0 ${LIB_DIR}/libinjection.so.${LIBRARY_VERSION} && ln -sf libinjection.so.${LIBRARY_VERSION} ${LIB_DIR}/libinjection.so
+endif
 
 HEADERS=libinjection.h libinjection_sqli.h libinjection_sqli_data.h libinjection_html5.h libinjection_xss.h libinjection_normalize.h libinjection_classify.h libinjection_trav.h libinjection_ssrf.h libinjection_deser.h libinjection_crlf.h libinjection_cmd.h libinjection_ssti.h libinjection_nosql.h libinjection_ldap.h libinjection_code.h libinjection_recon.h libinjection_redirect.h
 
@@ -128,7 +145,8 @@ libinjection_redirect.o: libinjection_redirect.h libinjection_redirect.c
 	${CC} ${CFLAGS} -c -o libinjection_redirect.o libinjection_redirect.c
 
 ${SHAREDLIB}: ${OBJECTS}
-	$(CC) $+ -shared -lc -o $@
+	$(CC) $+ ${SHAREDFLAGS} -lc -o ${SHAREDTARGET}
+	@${POSTBUILD}
 
 ${STATICLIB}: ${OBJECTS}
 	rm -f ${STATICLIB}
@@ -193,11 +211,14 @@ fptool: fptool.c ${STATICLIB}
 injection: injection_cli.c ${STATICLIB}
 	${CC} ${CFLAGS} -o injection injection_cli.c -L. ${STATICLIB}
 
-install: ${STATICLIB}
+install: all
 	${INSTALL} -d ${INCLUDE_DIR}
 	${INSTALL} -c ${HEADERS} ${INCLUDE_DIR}
 	${INSTALL} -d ${LIB_DIR}
 	${INSTALL} -c ${STATICLIB} ${LIB_DIR}
+	${INSTALL} -c ${SHAREDTARGET} ${LIB_DIR}
+	@${INSTALL_LINKS}
+	ldconfig 2>/dev/null || true
 
 .PHONY: install
 
