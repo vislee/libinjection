@@ -1,0 +1,6 @@
+--TEST--
+stacked shutdown
+--INPUT--
+';shutdown--
+--EXPECTED--
+s;Tc

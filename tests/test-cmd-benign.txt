@@ -1,0 +1,6 @@
+--TEST--
+query keys are benign
+--INPUT--
+sort=asc&type=detail&cat=5
+--EXPECTED--
+0

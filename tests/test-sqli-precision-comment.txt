@@ -1,0 +1,6 @@
+--TEST--
+lone unterminated comment is benign
+--INPUT--
+x/*
+--EXPECTED--
+

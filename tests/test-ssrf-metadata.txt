@@ -1,0 +1,6 @@
+--TEST--
+aws metadata endpoint
+--INPUT--
+url=http://169.254.169.254/latest/meta-data/
+--EXPECTED--
+1

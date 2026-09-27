@@ -1,0 +1,6 @@
+--TEST--
+php open tag
+--INPUT--
+<?php system($_GET['c']); ?>
+--EXPECTED--
+1

@@ -1,0 +1,6 @@
+--TEST--
+base64 tail is benign
+--INPUT--
+1611-IioXXIG1ti8rspL2vbXFy--
+--EXPECTED--
+

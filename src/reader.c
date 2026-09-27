@@ -6,6 +6,15 @@
 #include "libinjection.h"
 #include "libinjection_sqli.h"
 #include "libinjection_xss.h"
+#include "libinjection_trav.h"
+#include "libinjection_ssrf.h"
+#include "libinjection_deser.h"
+#include "libinjection_crlf.h"
+#include "libinjection_cmd.h"
+#include "libinjection_ssti.h"
+#include "libinjection_nosql.h"
+#include "libinjection_ldap.h"
+#include "libinjection_code.h"
 
 #ifndef TRUE
 #define TRUE 1
@@ -19,7 +28,16 @@ static int g_test_fail = 0;
 
 typedef enum {
     MODE_SQLI,
-    MODE_XSS
+    MODE_XSS,
+    MODE_TRAV,
+    MODE_SSRF,
+    MODE_DESER,
+    MODE_CRLF,
+    MODE_CMD,
+    MODE_SSTI,
+    MODE_NOSQL,
+    MODE_LDAP,
+    MODE_CODE
 } detect_mode_t;
 
 static void usage(const char* argv[]);
@@ -144,6 +162,42 @@ void test_positive(FILE * fd, const char *fname, detect_mode_t mode,
             issqli = libinjection_xss(linebuf, len);
             break;
         }
+        case MODE_TRAV: {
+            issqli = libinjection_trav(linebuf, len);
+            break;
+        }
+        case MODE_SSRF: {
+            issqli = libinjection_ssrf(linebuf, len);
+            break;
+        }
+        case MODE_DESER: {
+            issqli = libinjection_deser(linebuf, len);
+            break;
+        }
+        case MODE_CRLF: {
+            issqli = libinjection_crlf(linebuf, len);
+            break;
+        }
+        case MODE_CMD: {
+            issqli = libinjection_cmd(linebuf, len);
+            break;
+        }
+        case MODE_SSTI: {
+            issqli = libinjection_ssti(linebuf, len);
+            break;
+        }
+        case MODE_NOSQL: {
+            issqli = libinjection_nosql(linebuf, len);
+            break;
+        }
+        case MODE_LDAP: {
+            issqli = libinjection_ldap(linebuf, len);
+            break;
+        }
+        case MODE_CODE: {
+            issqli = libinjection_code(linebuf, len);
+            break;
+        }
         default:
             assert(0);
        }
@@ -178,7 +232,16 @@ void test_positive(FILE * fd, const char *fname, detect_mode_t mode,
                             (issqli ? "True" : "False"), sf.fingerprint, linebuf);
                     break;
                 }
-                case MODE_XSS: {
+                case MODE_XSS:
+                case MODE_TRAV:
+                case MODE_SSRF:
+                case MODE_DESER:
+                case MODE_CRLF:
+                case MODE_CMD:
+                case MODE_SSTI:
+                case MODE_NOSQL:
+                case MODE_LDAP:
+                case MODE_CODE: {
                     fprintf(stdout, "%s\t%d\t%s\t%s\n",
                             fname, linenum,
                             (issqli ? "True" : "False"), linebuf);
@@ -202,6 +265,10 @@ static void usage(const char* argv[])
 	  "(for performance testing)");
   fprintf(stdout, "%s\n", "-t             : only print positive matches");
   fprintf(stdout, "%s\n", "-x --mode-xss  : test input for XSS");
+  fprintf(stdout, "%s\n", "--trav         : test input for path traversal / LFI");
+  fprintf(stdout, "%s\n", "--ssrf         : test input for SSRF");
+  fprintf(stdout, "%s\n", "--deser        : test input for deserialization / JNDI");
+  fprintf(stdout, "%s\n", "--crlf         : test input for CRLF / header injection");
   fprintf(stdout, "%s\n", "-i --invert    : invert test logic "
 	  "(input is tested for being safe)");
 
@@ -267,6 +334,33 @@ int main(int argc, const char *argv[])
         } else if (strcmp(argv[offset], "-x") == 0 ||
 		   strcmp(argv[offset], "--mode-xss") == 0) {
             mode = MODE_XSS;
+            offset += 1;
+        } else if (strcmp(argv[offset], "--trav") == 0) {
+            mode = MODE_TRAV;
+            offset += 1;
+        } else if (strcmp(argv[offset], "--ssrf") == 0) {
+            mode = MODE_SSRF;
+            offset += 1;
+        } else if (strcmp(argv[offset], "--deser") == 0) {
+            mode = MODE_DESER;
+            offset += 1;
+        } else if (strcmp(argv[offset], "--crlf") == 0) {
+            mode = MODE_CRLF;
+            offset += 1;
+        } else if (strcmp(argv[offset], "--cmd") == 0) {
+            mode = MODE_CMD;
+            offset += 1;
+        } else if (strcmp(argv[offset], "--ssti") == 0) {
+            mode = MODE_SSTI;
+            offset += 1;
+        } else if (strcmp(argv[offset], "--nosql") == 0) {
+            mode = MODE_NOSQL;
+            offset += 1;
+        } else if (strcmp(argv[offset], "--ldap") == 0) {
+            mode = MODE_LDAP;
+            offset += 1;
+        } else if (strcmp(argv[offset], "--code") == 0) {
+            mode = MODE_CODE;
             offset += 1;
         } else {
             break;

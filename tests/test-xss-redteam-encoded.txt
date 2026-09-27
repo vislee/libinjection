@@ -1,0 +1,6 @@
+--TEST--
+encoded script tag
+--INPUT--
+%3Cscript%3Ealert(1)%3C/script%3E
+--EXPECTED--
+0

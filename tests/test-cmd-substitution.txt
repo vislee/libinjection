@@ -1,0 +1,6 @@
+--TEST--
+command substitution
+--INPUT--
+$(id)
+--EXPECTED--
+1

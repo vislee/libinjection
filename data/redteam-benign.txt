@@ -1,0 +1,32 @@
+Hello world, this is a normal sentence.
+用户名: zhang-san_01
+profile_id=12345&sort=asc
+{"name":"alice","age":30,"tags":["a","b"]}
+created_at > '2026-01-01'
+preferred_color: dark blue
+it's a beautiful day, isn't it?
+The quick brown fox jumps over the lazy dog
+email: john.doe@example.com, phone: +1-555-0100
+https://example.com/path/to/page?utm_source=newsletter&id=42
+price: $1,299.99 (30% off)
+C:\\Users\\john\\documents\\report.pdf
+auto_conf: 80% cotton and 20% wool blend
+base64: SGVsbG8gV29ybGQhMTIzNDU2Nzg5MGFiY2RlZg==
+1 + 1 = 2
+100% ACRYLIC AND 20% WOOL
+footnote 12-- see appendix for details
+version 2.0.beta-1
+q="winter coat" & view=gallery
+a & b & c
+#FF5733 is a nice color
+not really a script
+onions, celery, and carrots
+left -- right -- center
+MIX 50%/50% AND 50%/50%
+select
+order by
+<div>safe html content</div>
+<p style="color: blue">styled text</p>
+user@domain
+9999999999999999
+1;2;3

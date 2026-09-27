@@ -1,0 +1,20 @@
+sort=asc&type=detail&cat=5
+price is $100 (USD)
+download the cat pictures
+markdown with `code` spans
+{{user.name}} placeholder
+config: ${config.value}
+use python to parse the file
+echo chamber article
+wifi & network settings
+taskkill the process manually
+template ${user.profile} render
+regex ^[a-z]+$ for validation
+category=5&type=1
+select options below
+{"name":"alice","tags":{"a":1}}
+deploy dir /srv/app current
+iex is a stock ticker
+where clause syntax explained
+system requirements listed here
+x=$(not a substitution)

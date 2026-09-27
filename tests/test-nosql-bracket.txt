@@ -1,0 +1,6 @@
+--TEST--
+bracket operator injection
+--INPUT--
+login[$ne]=1&pass[$ne]=1
+--EXPECTED--
+1

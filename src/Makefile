@@ -19,18 +19,40 @@ STATICLIB=lib${LIBNAME}.${STATICLIB_SUFFIX}
 SHAREDLIB_SUFFIX=so
 SHAREDLIB=lib${LIBNAME}.${SHAREDLIB_SUFFIX}
 
-HEADERS=libinjection.h libinjection_sqli.h libinjection_sqli_data.h libinjection_html5.h libinjection_xss.h
+HEADERS=libinjection.h libinjection_sqli.h libinjection_sqli_data.h libinjection_html5.h libinjection_xss.h libinjection_normalize.h libinjection_classify.h libinjection_trav.h libinjection_ssrf.h libinjection_deser.h libinjection_crlf.h libinjection_cmd.h libinjection_ssti.h libinjection_nosql.h libinjection_ldap.h libinjection_code.h
 
 SOURCES=libinjection_sqli.c \
 	libinjection_html5.c \
-	libinjection_xss.c
+	libinjection_xss.c \
+	libinjection_normalize.c \
+	libinjection_classify.c \
+	libinjection_trav.c \
+	libinjection_ssrf.c \
+	libinjection_deser.c \
+	libinjection_crlf.c \
+	libinjection_cmd.c \
+	libinjection_ssti.c \
+	libinjection_nosql.c \
+	libinjection_ldap.c \
+	libinjection_code.c
 
 OBJECTS=libinjection_sqli.o \
 	libinjection_html5.o \
-	libinjection_xss.o
+	libinjection_xss.o \
+	libinjection_normalize.o \
+	libinjection_classify.o \
+	libinjection_trav.o \
+	libinjection_ssrf.o \
+	libinjection_deser.o \
+	libinjection_crlf.o \
+	libinjection_cmd.o \
+	libinjection_ssti.o \
+	libinjection_nosql.o \
+	libinjection_ldap.o \
+	libinjection_code.o
 
-SAMPLES=html5 sqli fptool
-TESTDRIVERS=reader testdriver testspeedxss testspeedsqli
+SAMPLES=html5 sqli fptool injection
+TESTDRIVERS=reader testdriver testspeedxss testspeedsqli test_unit
 
 all: ${SHAREDLIB} ${STATICLIB}
 #all: ${STATICLIB}
@@ -62,6 +84,39 @@ libinjection_xss.o: libinjection.h libinjection_xss.c libinjection_xss.h libinje
 libinjection_html5.o: libinjection.h libinjection_html5.c libinjection_html5.h
 	${CC} ${CFLAGS} -c -o libinjection_html5.o libinjection_html5.c
 
+libinjection_normalize.o: libinjection.h libinjection_normalize.c libinjection_normalize.h
+	${CC} ${CFLAGS} -c -o libinjection_normalize.o libinjection_normalize.c
+
+libinjection_classify.o: libinjection.h libinjection_classify.c libinjection_classify.h libinjection_normalize.h libinjection_sqli.h libinjection_xss.h libinjection_trav.h libinjection_ssrf.h libinjection_deser.h libinjection_crlf.h libinjection_cmd.h libinjection_ssti.h libinjection_nosql.h libinjection_ldap.h libinjection_code.h
+	${CC} ${CFLAGS} -c -o libinjection_classify.o libinjection_classify.c
+
+libinjection_trav.o: libinjection_trav.h libinjection_trav.c
+	${CC} ${CFLAGS} -c -o libinjection_trav.o libinjection_trav.c
+
+libinjection_ssrf.o: libinjection_ssrf.h libinjection_ssrf.c
+	${CC} ${CFLAGS} -c -o libinjection_ssrf.o libinjection_ssrf.c
+
+libinjection_deser.o: libinjection_deser.h libinjection_deser.c
+	${CC} ${CFLAGS} -c -o libinjection_deser.o libinjection_deser.c
+
+libinjection_crlf.o: libinjection_crlf.h libinjection_crlf.c
+	${CC} ${CFLAGS} -c -o libinjection_crlf.o libinjection_crlf.c
+
+libinjection_cmd.o: libinjection_cmd.h libinjection_cmd.c
+	${CC} ${CFLAGS} -c -o libinjection_cmd.o libinjection_cmd.c
+
+libinjection_ssti.o: libinjection_ssti.h libinjection_ssti.c
+	${CC} ${CFLAGS} -c -o libinjection_ssti.o libinjection_ssti.c
+
+libinjection_nosql.o: libinjection_nosql.h libinjection_nosql.c
+	${CC} ${CFLAGS} -c -o libinjection_nosql.o libinjection_nosql.c
+
+libinjection_ldap.o: libinjection_ldap.h libinjection_ldap.c
+	${CC} ${CFLAGS} -c -o libinjection_ldap.o libinjection_ldap.c
+
+libinjection_code.o: libinjection_code.h libinjection_code.c
+	${CC} ${CFLAGS} -c -o libinjection_code.o libinjection_code.c
+
 ${SHAREDLIB}: ${OBJECTS}
 	$(CC) $+ -shared -lc -o $@
 
@@ -70,6 +125,22 @@ ${STATICLIB}: ${OBJECTS}
 	${AR} ${STATICLIB} ${OBJECTS}
 
 check: ${TESTDRIVERS}
+	@make injection
+	@./test-cli.sh
+	@./test_unit
+	@./testdriver -q ../tests/test-sqli-redteam-*.txt \
+	              ../tests/test-sqli-precision-*.txt \
+	              ../tests/test-xss-redteam-*.txt \
+	              ../tests/test-xss-negative-*.txt \
+	              ../tests/test-trav-*.txt \
+	              ../tests/test-ssrf-*.txt \
+	              ../tests/test-deser-*.txt \
+	              ../tests/test-crlf-*.txt \
+	              ../tests/test-cmd-*.txt \
+	              ../tests/test-ssti-*.txt \
+	              ../tests/test-nosql-*.txt \
+	              ../tests/test-ldap-*.txt \
+	              ../tests/test-code-*.txt
 	@./test-driver.sh test-unit.sh
 	@./test-driver.sh test-samples-sqli-negative.sh
 	@./test-driver.sh test-samples-sqli-positive.sh
@@ -95,6 +166,9 @@ html5: html5_cli.c ${STATICLIB}
 testdriver: testdriver.c ${STATICLIB}
 	${CC} ${CFLAGS} -o testdriver testdriver.c -L. ${STATICLIB}
 
+test_unit: test_unit.c ${STATICLIB}
+	${CC} ${CFLAGS} -o test_unit test_unit.c -L. ${STATICLIB}
+
 testspeedsqli: test_speed_sqli.c ${STATICLIB}
 	${CC} ${CFLAGS} -o testspeedsqli test_speed_sqli.c -L. ${STATICLIB}
 
@@ -103,6 +177,9 @@ testspeedxss: test_speed_xss.c ${STATICLIB}
 
 fptool: fptool.c ${STATICLIB}
 	${CC} ${CFLAGS} -o fptool fptool.c -L. ${STATICLIB}
+
+injection: injection_cli.c ${STATICLIB}
+	${CC} ${CFLAGS} -o injection injection_cli.c -L. ${STATICLIB}
 
 install: ${STATICLIB}
 	${INSTALL} -d ${INCLUDE_DIR}

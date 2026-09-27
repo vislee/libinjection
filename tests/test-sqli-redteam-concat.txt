@@ -1,0 +1,6 @@
+--TEST--
+string concat escape
+--INPUT--
+foo'+'bar
+--EXPECTED--
+sos

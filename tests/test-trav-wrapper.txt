@@ -1,0 +1,6 @@
+--TEST--
+php filter wrapper
+--INPUT--
+?f=php://filter/convert.base64-encode/resource=index
+--EXPECTED--
+1

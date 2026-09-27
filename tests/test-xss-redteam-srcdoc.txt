@@ -1,0 +1,6 @@
+--TEST--
+srcdoc attribute
+--INPUT--
+<iframe srcdoc="&lt;script&gt;alert(1)&lt;/script&gt;">
+--EXPECTED--
+1

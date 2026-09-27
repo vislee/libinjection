@@ -1,0 +1,6 @@
+--TEST--
+bold tag is safe
+--INPUT--
+<b>bold</b>
+--EXPECTED--
+0

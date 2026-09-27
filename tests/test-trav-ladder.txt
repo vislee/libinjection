@@ -1,0 +1,6 @@
+--TEST--
+dotdot ladder to passwd
+--INPUT--
+../../../../etc/passwd
+--EXPECTED--
+1

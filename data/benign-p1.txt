@@ -1,0 +1,22 @@
+setup guide for routers at 192.168.1.1
+ping 127.0.0.1 to test loopback
+version 10.04 LTS release notes
+upgrade path from 2.0 to 3.0
+upgrade changelog for build 172.16.3
+endpoint /api/v1/users
+email admin@example.com for access
+read the docs at ../docs/README
+BASE64: SGVsbG8gV29ybGQhMTIzNDU2Nzg5
+{"name":"alice","age":30,"tags":["a","b"]}
+color: blue; font-size: 12px
+log line: 2026-09-27 INFO server started
+the ${currency} placeholder in templates
+normal text with a | pipe and & ampersand
+kernel 5.15.0-84 released today
+localhost development mode enabled
+the server IP is 10.0.0.3 in staging
+text%0amore text after a lone newline
+O:nly ordinary words here
+gopher damage in the garden
+file sharing policy draft v2
+dict: a book of words

@@ -1,0 +1,6 @@
+--TEST--
+java serialization base64
+--INPUT--
+rO0ABXNyABFqYXZhLnV0aWwuSGFzaE1hcA==
+--EXPECTED--
+1

@@ -1,0 +1,6 @@
+--TEST--
+parens prose benign
+--INPUT--
+name)(phone ext 12
+--EXPECTED--
+0

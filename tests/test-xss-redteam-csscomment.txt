@@ -1,0 +1,6 @@
+--TEST--
+CSS comment-split expression
+--INPUT--
+<IMG STYLE="xss:expr/*XSS*/ession(alert('XSS'))">
+--EXPECTED--
+1

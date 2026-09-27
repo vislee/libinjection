@@ -1,0 +1,6 @@
+--TEST--
+tagless style attribute injection (CSIC/Paros vector)
+--INPUT--
+x" style="background:url(javascript:alert(1))
+--EXPECTED--
+1

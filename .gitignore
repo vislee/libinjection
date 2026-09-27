@@ -44,3 +44,11 @@ stamp-h1
 *.lo
 *.gcno
 *.gcda
+*.profraw
+
+# monbot workspace metadata (local only)
+.monbot/
+AGENTS.md
+BOOTSTRAP.md
+HEARTBEAT.md
+TOOLS.md

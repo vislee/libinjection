@@ -1,0 +1,6 @@
+--TEST--
+crlf set-cookie injection
+--INPUT--
+%0d%0aSet-Cookie:%20sessionid=attacker
+--EXPECTED--
+1

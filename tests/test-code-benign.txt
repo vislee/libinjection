@@ -1,0 +1,6 @@
+--TEST--
+xml declaration benign
+--INPUT--
+<?xml version="1.0"?>
+--EXPECTED--
+0

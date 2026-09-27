@@ -1,0 +1,6 @@
+--TEST--
+stacked drop (new fingerprint)
+--INPUT--
+;drop table users;
+--EXPECTED--
+;Tnn;

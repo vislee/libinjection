@@ -714,6 +714,7 @@
 1;T;
 1;T;c
 1;TTn
+1;Tc
 1;Tf(
 1;Tk(
 1;Tk1
@@ -812,6 +813,7 @@
 1B1U(
 1B1UE
 1B1c
+1B1f(
 1B1k(
 1B1k1
 1B1kf
@@ -854,6 +856,7 @@
 1BnU(
 1BnUE
 1Bnc
+1Bnf(
 1Bnk(
 1Bnk1
 1Bnkf
@@ -884,6 +887,7 @@
 1BsU(
 1BsUE
 1Bsc
+1Bsf(
 1Bsk(
 1Bsk1
 1Bskf
@@ -916,6 +920,7 @@
 1BvU(
 1BvUE
 1Bvc
+1Bvf(
 1Bvk(
 1Bvk1
 1Bvkf
@@ -1310,6 +1315,13 @@
 1f(v)
 1f(vo
 1k(1o
+1k(E(
+1k(E1
+1k(Ef
+1k(Ek
+1k(En
+1k(Es
+1k(Ev
 1k(f(
 1k(n)
 1k(no
@@ -1805,6 +1817,9 @@
 ;T(Ef
 ;T(Ek
 ;Tknc
+;Tnn
+;Tnn;
+;Tnnc
 E(1&(
 E(1&1
 E(1&f
@@ -2787,6 +2802,7 @@ Evsof
 Evson
 Evsos
 Evsov
+S
 T(1)f
 T(1)o
 T(1f(
@@ -4141,6 +4157,7 @@ n;T1o
 n;T;
 n;T;c
 n;TTn
+n;Tc
 n;Tf(
 n;Tk(
 n;Tk1
@@ -4243,6 +4260,7 @@ nB1Bv
 nB1U(
 nB1UE
 nB1c
+nB1f(
 nB1k(
 nB1k1
 nB1kf
@@ -4284,6 +4302,7 @@ nBnBv
 nBnU(
 nBnUE
 nBnc
+nBnf(
 nBnk(
 nBnk1
 nBnkf
@@ -4314,6 +4333,7 @@ nBsBv
 nBsU(
 nBsUE
 nBsc
+nBsf(
 nBsk(
 nBsk1
 nBskf
@@ -4346,6 +4366,7 @@ nBvBv
 nBvU(
 nBvUE
 nBvc
+nBvf(
 nBvk(
 nBvk1
 nBvkf
@@ -4701,6 +4722,13 @@ nf(v)
 nf(vo
 nk(1)
 nk(1o
+nk(E(
+nk(E1
+nk(Ef
+nk(Ek
+nk(En
+nk(Es
+nk(Ev
 nk(f(
 nk(no
 nk(s)
@@ -5681,6 +5709,7 @@ s;T1o
 s;T;
 s;T;c
 s;TTn
+s;Tc
 s;Tf(
 s;Tk(
 s;Tk1
@@ -5780,6 +5809,7 @@ sB1Bv
 sB1U(
 sB1UE
 sB1c
+sB1f(
 sB1k(
 sB1k1
 sB1kf
@@ -5822,6 +5852,7 @@ sBnBv
 sBnU(
 sBnUE
 sBnc
+sBnf(
 sBnk(
 sBnk1
 sBnkf
@@ -5852,6 +5883,7 @@ sBsBv
 sBsU(
 sBsUE
 sBsc
+sBsf(
 sBsk(
 sBsk1
 sBskf
@@ -5884,6 +5916,7 @@ sBvBv
 sBvU(
 sBvUE
 sBvc
+sBvf(
 sBvk(
 sBvk1
 sBvkf
@@ -6277,6 +6310,13 @@ sf(v)
 sf(vo
 sk(1)
 sk(1o
+sk(E(
+sk(E1
+sk(Ef
+sk(Ek
+sk(En
+sk(Es
+sk(Ev
 sk(f(
 sk(n)
 sk(no
@@ -7450,6 +7490,7 @@ v;T1o
 v;T;
 v;T;c
 v;TTn
+v;Tc
 v;Tf(
 v;Tk(
 v;Tk1
@@ -7549,6 +7590,7 @@ vB1Bv
 vB1U(
 vB1UE
 vB1c
+vB1f(
 vB1k(
 vB1k1
 vB1kf
@@ -7591,6 +7633,7 @@ vBnBv
 vBnU(
 vBnUE
 vBnc
+vBnf(
 vBnk(
 vBnk1
 vBnkf
@@ -7621,6 +7664,7 @@ vBsBv
 vBsU(
 vBsUE
 vBsc
+vBsf(
 vBsk(
 vBsk1
 vBskf
@@ -7653,6 +7697,7 @@ vBvBv
 vBvU(
 vBvUE
 vBvc
+vBvf(
 vBvk(
 vBvk1
 vBvkf
@@ -8047,6 +8092,13 @@ vf(v)
 vf(vo
 vk(1)
 vk(1o
+vk(E(
+vk(E1
+vk(Ef
+vk(Ek
+vk(En
+vk(Es
+vk(Ev
 vk(f(
 vk(n)
 vk(no

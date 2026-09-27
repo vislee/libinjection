@@ -1,0 +1,6 @@
+--TEST--
+template placeholder is benign
+--INPUT--
+the ${currency} placeholder in templates
+--EXPECTED--
+0

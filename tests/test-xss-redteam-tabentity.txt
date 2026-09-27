@@ -1,0 +1,6 @@
+--TEST--
+tab entity inside scheme
+--INPUT--
+<IMG SRC="jav&#x09;ascript:alert('XSS');">
+--EXPECTED--
+1

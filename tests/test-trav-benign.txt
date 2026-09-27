@@ -1,0 +1,6 @@
+--TEST--
+relative doc link is benign
+--INPUT--
+see ../docs/README
+--EXPECTED--
+0

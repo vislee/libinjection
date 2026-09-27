@@ -1,0 +1,6 @@
+--TEST--
+keygen tag
+--INPUT--
+<keygen autofocus onfocus=alert(1)>
+--EXPECTED--
+1

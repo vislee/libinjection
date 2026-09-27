@@ -1,0 +1,6 @@
+--TEST--
+lone newline is benign
+--INPUT--
+text%0amore text
+--EXPECTED--
+0

@@ -1,0 +1,6 @@
+--TEST--
+plain placeholder benign
+--INPUT--
+{{user.name}}
+--EXPECTED--
+0

@@ -1,0 +1,6 @@
+--TEST--
+plain text is safe
+--INPUT--
+hello world
+--EXPECTED--
+0

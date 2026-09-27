@@ -1,0 +1,6 @@
+--TEST--
+loopback in prose is benign
+--INPUT--
+ping 127.0.0.1 to test loopback
+--EXPECTED--
+0

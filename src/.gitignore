@@ -21,3 +21,10 @@ h5
 *.log
 gmon.out
 
+test_unit
+coverage-data/
+*.profraw
+*.profdata
+*.profraw
+*.profdata
+coverage-data/

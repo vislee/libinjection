@@ -1,0 +1,6 @@
+--TEST--
+percent glue is benign
+--INPUT--
+80% ACRYLIC AND 20% WOOL
+--EXPECTED--
+

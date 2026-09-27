@@ -1,0 +1,6 @@
+--TEST--
+encoded newline + command
+--INPUT--
+%0acat /etc/passwd
+--EXPECTED--
+1

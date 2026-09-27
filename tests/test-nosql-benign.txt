@@ -1,0 +1,6 @@
+--TEST--
+prices benign
+--INPUT--
+price $5 and $10 range
+--EXPECTED--
+0

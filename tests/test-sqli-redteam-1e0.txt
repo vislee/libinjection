@@ -1,0 +1,6 @@
+--TEST--
+scientific notation bypass
+--INPUT--
+1e0 from (select 1)e union select 2
+--EXPECTED--
+1k(E1

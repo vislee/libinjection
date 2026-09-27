@@ -1,0 +1,6 @@
+--TEST--
+ldap filter boundary
+--INPUT--
+*)(uid=*))(|(uid=*
+--EXPECTED--
+1

@@ -1,0 +1,6 @@
+--TEST--
+procedure analyse
+--INPUT--
+1 limit 1,1 procedure analyse()
+--EXPECTED--
+1B1f(

@@ -1,0 +1,6 @@
+--TEST--
+svg filter url reference is safe
+--INPUT--
+<x filter="url(#blur)">y</x>
+--EXPECTED--
+0

@@ -1,0 +1,6 @@
+--TEST--
+plain query sentence is benign
+--INPUT--
+select x from y where
+--EXPECTED--
+

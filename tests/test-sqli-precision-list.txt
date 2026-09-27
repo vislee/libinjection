@@ -1,0 +1,6 @@
+--TEST--
+comma list tail is benign
+--INPUT--
+1,1--
+--EXPECTED--
+

