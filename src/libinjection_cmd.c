@@ -175,6 +175,23 @@ static int meta_before(const char* s, size_t start)
                 i = j - 1;
                 continue;
             }
+            /* Java/Groovy "new" keyword before a command word is not
+             * word glue ("concat" style), so skip it and keep walking
+             * back to the real metacharacter.  This lets us detect
+             * "1;new ProcessBuilder('id').start()" — "new" is the
+             * Java instantiation keyword, not an ambiguous English
+             * word that would create false positives in prose. */
+            if (i >= 3 &&
+                (s[i - 1] == 'w' || s[i - 1] == 'W') &&
+                (s[i - 2] == 'e' || s[i - 2] == 'E') &&
+                (s[i - 3] == 'n' || s[i - 3] == 'N') &&
+                (i == 3 || ! ISALNUM(s[i - 4]))) {
+                i -= 3;
+                while (i > 0 && (s[i - 1] == ' ' || s[i - 1] == '\t')) {
+                    i -= 1;
+                }
+                continue;
+            }
             return FALSE;
         }
         return FALSE;                          /* letter/digit glue */
