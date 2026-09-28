@@ -75,6 +75,30 @@ static char lower(char c)
     return c;
 }
 
+/* case-insensitive substring search */
+static int contains_ci(const char* s, size_t len, const char* needle)
+{
+    size_t nlen = strlen(needle);
+    size_t i;
+    if (nlen == 0 || len < nlen) {
+        return FALSE;
+    }
+    for (i = 0; i + nlen <= len; ++i) {
+        size_t j;
+        int match = 1;
+        for (j = 0; j < nlen; ++j) {
+            if (lower(s[i + j]) != lower(needle[j])) {
+                match = 0;
+                break;
+            }
+        }
+        if (match) {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
 int libinjection_ssti(const char* s, size_t len)
 {
     size_t m;
@@ -201,6 +225,31 @@ int libinjection_ssti(const char* s, size_t len)
             }
             if (k + 1 < len && s[k] == '}' && s[k + 1] == '}') {
                 return TRUE;
+            }
+        }
+    }
+
+    /* Java reflection chains that do not carry a template marker:
+     * getClassLoader() and "extends ClassLoader" are strong signals
+     * on their own (Java class-name, dot-call or extends keyword).
+     * Word-boundary on "extends" prevents matching "extendsX". */
+    if (contains_ci(s, len, "getclassloader")) {
+        return TRUE;
+    }
+    {
+        size_t j;
+        for (j = 0; j + 17 <= len; ++j) {
+            if (lower(s[j]) == 'e' && lower(s[j + 1]) == 'x' &&
+                lower(s[j + 2]) == 't' && lower(s[j + 3]) == 'e' &&
+                lower(s[j + 4]) == 'n' && lower(s[j + 5]) == 'd' &&
+                lower(s[j + 6]) == 's' && s[j + 7] == ' ') {
+                /* word boundary before "extends" */
+                if (j > 0 && ISALNUM(s[j - 1])) {
+                    continue;
+                }
+                if (contains_ci(s + j + 8, len - j - 8, "classloader")) {
+                    return TRUE;
+                }
             }
         }
     }

@@ -45,6 +45,7 @@ static const char* COMMAND_WORDS[] = {
     , "wc", "sort", "uniq", "cut", "xargs", "tee", "crontab"
     , "shutdown", "reboot", "poweroff", "systemctl", "service"
     , "apt", "yum", "rpm", "dpkg", "pip", "npm", "node", "java"
+    , "lua", "processbuilder"
     /* windows */
     , "dir", "type", "del", "copy", "move", "rd", "cls", "ipconfig"
     , "net", "netsh", "tasklist", "taskkill", "reg", "wmic"

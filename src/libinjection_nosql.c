@@ -20,7 +20,7 @@
 #endif
 
 static const char* OPERATORS[] = {
-    "ne", "gt", "gte", "lt", "lte", "in", "nin", "regex", "where"
+    "ne", "gt", "gte", "lt", "lte", "in", "nin", "or", "regex", "where"
     , "options", "not", "mod", "type", "all", "size", "elemmatch"
     , "func", NULL
 };
