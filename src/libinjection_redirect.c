@@ -26,6 +26,10 @@
 #define FALSE 0
 #endif
 
+#define ISALNUM(a) (((unsigned)((a) - '0') < 10u) || \
+                    ((unsigned)((a) - 'a') < 26u) || \
+                    ((unsigned)((a) - 'A') < 26u))
+
 static char lower(char c)
 {
     if (c >= 'A' && c <= 'Z') {
@@ -82,7 +86,64 @@ static size_t value_start(const char* s, size_t pos, size_t end)
     return pos;
 }
 
-/* check one value span [pos, end) */
+/* redirect-type parameter names that clearly indicate redirect
+ * intent.  Generic names like "url", "path", "target", "link" are
+ * excluded because they frequently carry legitimate absolute URLs
+ * in non-redirect contexts.  "redirect_uri" and "callback" (the
+ * OAuth2 standard params) are excluded for the same reason: their
+ * whole purpose is carrying an absolute https URL, so flagging them
+ * would mark every OAuth login.  The "return_url"/"returnUrl" login
+ * round-trip params are excluded for the same reason: a legitimate
+ * returnUrl IS an absolute URL (ASP.NET forms auth, SSO callbacks,
+ * "http://internal-portal.local/login"), so only an integrator-side
+ * domain whitelist can tell a safe one from an attacker URL.
+ * Integrators can layer a domain whitelist on top if they need to. */
+static const char* REDIRECT_PARAMS[] = {
+    "redirect"
+    , "redir"
+    , "goto"
+    , "continue"
+    , "dest"
+    , "destination"
+    , "successurl"
+    , "success_url"
+    , "forward"
+    , "rurl"
+    , "redirect_url"
+    , "redirect_to"
+    , NULL
+};
+
+static int is_redirect_param(const char* s, size_t key_start, size_t key_end)
+{
+    size_t klen = key_end - key_start;
+    int n;
+    /* key may carry a leading '?' or ';' from a whole query string
+     * ("?redirect_uri=..."): skip non-name punctuation */
+    while (key_start < key_end && ! ISALNUM(s[key_start])) {
+        key_start += 1;
+    }
+    klen = key_end - key_start;
+    for (n = 0; REDIRECT_PARAMS[n] != NULL; ++n) {
+        size_t plen = strlen(REDIRECT_PARAMS[n]);
+        size_t j;
+        int match = 1;
+        if (klen != plen) {
+            continue;
+        }
+        for (j = 0; j < plen; ++j) {
+            if (lower(s[key_start + j]) != REDIRECT_PARAMS[n][j]) {
+                match = 0;
+                break;
+            }
+        }
+        if (match) {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
 static int check_value(const char* s, size_t pos, size_t end)
 {
     size_t i;
@@ -172,6 +233,14 @@ int libinjection_redirect(const char* s, size_t len)
         }
         if (check_value(s, (eq < end) ? eq + 1 : seg, end)) {
             return TRUE;
+        }
+        /* redirect-type param + absolute http(s):// URL = open redirect */
+        if (eq < end && is_redirect_param(s, seg, eq)) {
+            size_t vpos = value_start(s, eq + 1, end);
+            if (ci_starts_with(s, vpos, end, "http://") ||
+                ci_starts_with(s, vpos, end, "https://")) {
+                return TRUE;
+            }
         }
         if (end >= len) {
             break;

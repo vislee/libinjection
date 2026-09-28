@@ -22,10 +22,16 @@ static const char* CRLF_PAIRS[] = {
     , "%0d%0a"
     , "%0a%0d"
     , "%0d%0d%0a"
+    , "\n"                     /* bare LF: many servers accept LF-only */
+    , "\r"                     /* bare CR: some servers treat CR as EOL */
+    , "%0a"                     /* single encoded LF */
+    , "%0d"                     /* single encoded CR */
     , NULL
 };
 
-/* HTTP header syntax that must follow the pair to be an attack */
+/* HTTP header syntax that must follow the pair to be an attack.
+ * "x-" alone is too broad (prose like "x-ray" would match), so
+ * high-risk custom headers are listed by name. */
 static const char* HEADER_MARKERS[] = {
     "http/1"
     , "location:"
@@ -36,6 +42,20 @@ static const char* HEADER_MARKERS[] = {
     , "transfer-encoding"
     , "x-forwarded"
     , "refresh:"
+    , NULL
+};
+
+/* high-risk X-* custom headers, matched as "x-name:" so prose
+ * ("x-ray photo", "the host: is down") does not match */
+static const char* HEADER_MARKERS_X[] = {
+    "x-custom:"
+    , "x-real-ip:"
+    , "x-forwarded-for:"
+    , "x-original-url:"
+    , "x-rewrite-url:"
+    , "x-host:"
+    , "x-target:"
+    , "x-site:"
     , NULL
 };
 
@@ -116,6 +136,22 @@ int libinjection_crlf(const char* s, size_t len)
             int match = 1;
             for (j = 0; j < nlen; ++j) {
                 if (lower(s[i + j]) != lower(HEADER_MARKERS[n][j])) {
+                    match = 0;
+                    break;
+                }
+            }
+            if (match) {
+                return TRUE;
+            }
+        }
+    }
+    for (n = 0; HEADER_MARKERS_X[n] != NULL; ++n) {
+        size_t nlen = strlen(HEADER_MARKERS_X[n]);
+        for (i = after; i + nlen <= window; ++i) {
+            size_t j;
+            int match = 1;
+            for (j = 0; j < nlen; ++j) {
+                if (lower(s[i + j]) != lower(HEADER_MARKERS_X[n][j])) {
                     match = 0;
                     break;
                 }

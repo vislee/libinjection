@@ -1,0 +1,6 @@
+--TEST--
+redirect-intent parameter name plus an absolute http(s):// URL value
+--INPUT--
+goto=https://evil.com&a=1&dest=http://evil.com&redirect_to=https://evil.com
+--EXPECTED--
+1

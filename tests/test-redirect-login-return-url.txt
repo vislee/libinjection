@@ -1,0 +1,8 @@
+--TEST--
+login round-trip returnUrl carries an absolute URL by design; without
+an integrator-side domain whitelist this shape must stay benign
+(release-gate FP suppressor for benign-redirect corpus)
+--INPUT--
+returnUrl=http://internal-portal.local/login
+--EXPECTED--
+0

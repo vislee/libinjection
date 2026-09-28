@@ -1,0 +1,8 @@
+--TEST--
+OAuth2 standard params carry absolute https URLs by design, so they
+are excluded from the redirect-intent param table (flagging them
+would mark every OAuth login as an open redirect)
+--INPUT--
+redirect_uri=https://auth.example.com/cb&callback=https://api.example.com/oauth
+--EXPECTED--
+0

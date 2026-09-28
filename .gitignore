@@ -45,6 +45,8 @@ stamp-h1
 *.gcno
 *.gcda
 *.profraw
+*.bak
+*.tmp
 
 # monbot workspace metadata (local only)
 .monbot/

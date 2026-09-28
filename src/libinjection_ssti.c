@@ -19,6 +19,10 @@
 #define FALSE 0
 #endif
 
+#define ISALNUM(a) (((unsigned)((a) - '0') < 10u) || \
+                    ((unsigned)((a) - 'a') < 26u) || \
+                    ((unsigned)((a) - 'A') < 26u))
+
 static const char* MARKERS[] = {
     "{{", "${", "<%", "#{", "{%", NULL
 };
@@ -45,6 +49,21 @@ static const char* DANGER[] = {
     , "import sys"
     , "template.utility"
     , "freemarker.template"
+    , "request."
+    , "namespace"
+    , "lipsum"                  /* Jinja2 global builtin probe */
+    , "cycler"                  /* Jinja2 global builtin probe */
+    , "joiner"                  /* Jinja2 global builtin probe */
+    , NULL
+};
+
+/*
+ * short English words that need a word-boundary check on the left
+ * ("self" must not match "himself", "set " must not match "offset c")
+ */
+static const char* DANGER_BOUNDED[] = {
+    "self"                      /* {{self}} - Jinja2/Twig context probe */
+    , "set "                    /* {%set x=1%} - template tag injection */
     , NULL
 };
 
@@ -112,6 +131,36 @@ int libinjection_ssti(const char* s, size_t len)
                         for (z = 0; z < dlen; ++z) {
                             char a = s[k + z];
                             char b = DANGER[d][z];
+                            if (b >= 'a' && b <= 'z' && a >= 'A' && a <= 'Z') {
+                                a = (char) (a + 0x20);
+                            }
+                            if (a != b) {
+                                dmatch = 0;
+                                break;
+                            }
+                        }
+                        if (dmatch) {
+                            return TRUE;
+                        }
+                    }
+                }
+                /* same scan for words that must start on a word
+                 * boundary (k == marker end, or non-alnum before) */
+                for (d = 0; DANGER_BOUNDED[d] != NULL; ++d) {
+                    size_t dlen = strlen(DANGER_BOUNDED[d]);
+                    size_t k;
+                    if (dlen > window - (i + mlen)) {
+                        continue;
+                    }
+                    for (k = i + mlen; k + dlen <= window; ++k) {
+                        int dmatch = 1;
+                        size_t z;
+                        if (k > i + mlen && ISALNUM(s[k - 1])) {
+                            continue;         /* word glue: himself */
+                        }
+                        for (z = 0; z < dlen; ++z) {
+                            char a = s[k + z];
+                            char b = DANGER_BOUNDED[d][z];
                             if (b >= 'a' && b <= 'z' && a >= 'A' && a <= 'Z') {
                                 a = (char) (a + 0x20);
                             }

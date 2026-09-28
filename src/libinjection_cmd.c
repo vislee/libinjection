@@ -68,10 +68,12 @@ static int is_filler(char c)
 
 /* common English words on the command list: they only count as
  * commands with a shell-argument shape after them ("; sleep 5",
- * "; cat /etc/passwd"), not in prose ("wait; sleep tight") */
+ * "; cat /etc/passwd"), not in prose ("wait; sleep tight").
+ * "net" is not here: "net profit" style prose is guarded by the
+ * key=value and word-glue rules below instead. */
 static const char* AMBIGUOUS_WORDS[] = {
     "cat", "sleep", "head", "tail", "wc", "sort", "uniq", "cut"
-    , "find", "type", "echo", "touch", "net", "make", "tar"
+    , "find", "type", "echo", "touch", "make", "tar"
     , NULL
 };
 

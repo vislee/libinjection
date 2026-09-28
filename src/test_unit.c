@@ -754,6 +754,14 @@ static void test_detect(void)
     fp[0] = '\0';
     ok(libinjection_sqli("1 union select x-- ", 19, fp), "fp set");
     ok_str(fp, "1UEnc", "fingerprint value");
+
+    /* spatial + GTID error-based functions (MySQL/PostGIS) */
+    ok(is_sqli_str("1' and ST_X(a) and '1'='1"), "st_x oracle");
+    ok(is_sqli_str("1' and ST_DISTANCE(g1,g2) and '1'='1"), "st_distance oracle");
+    ok(is_sqli_str("x' and GTID_SUBSET('a','b') and '1'='1"), "gtid_subset");
+    ok(is_sqli_str("x' and WAIT_FOR_EXECUTED_GTID_SET('a') and '1'='1"),
+       "wait_for_executed_gtid_set");
+    ok(is_sqli_str("x' union select GEOMFROMTEXT('POINT(1 1)')--"), "geomfromtext");
 }
 
 /*
@@ -1435,6 +1443,14 @@ static void test_crlf(void)
     ok(! libinjection_crlf("a%0d%0abut no header here", 25), "crlf no header benign");
     ok(! libinjection_crlf("see the Location: docs", 22), "header word benign");
     ok(! libinjection_crlf("", 0), "empty");
+
+    /* bare LF/CR count as a pair, and high-risk X-* headers need
+     * the full "name:" shape */
+    ok(libinjection_crlf("v\nX-Real-IP: 1.2.3.4", 19), "lf-only x-real-ip");
+    ok(libinjection_crlf("v\nx-host: evil.com", 17), "lf-only x-host");
+    ok(libinjection_crlf("v\rX-Custom: payload", 18), "cr-only x-custom");
+    ok(! libinjection_crlf("a\nb\nx-ray photo", 14), "x-ray prose benign");
+    ok(! libinjection_crlf("note\nthe host: down", 18), "host prose benign");
 }
 
 static void test_classify_p1(void)
@@ -1487,6 +1503,17 @@ static void test_cmd(void)
     ok(! libinjection_cmd("$(x)", 4), "empty substitution benign");
     ok(! libinjection_cmd("catalog&sort=asc", 16), "word continuation benign");
     ok(! libinjection_cmd("", 0), "empty");
+
+    /* windows "net" command: ambiguous word removed from the
+     * prose-exception list, so it needs a metachar adjacent */
+    ok(libinjection_cmd("; net user hacker", 17), "semicolon net user");
+    ok(libinjection_cmd("| net stop mysql", 16), "pipe net stop");
+    ok(libinjection_cmd("& net localgroup admins x /add", 28), "amp net localgroup");
+    ok(! libinjection_cmd("the net profit margin", 21), "net prose benign");
+    ok(! libinjection_cmd("internet; the net effect", 24), "net glue benign");
+    ok(! libinjection_cmd("wait; sleep tight", 17), "sleep prose benign");
+    ok(! libinjection_cmd("red; cat videos", 15), "cat prose after meta benign");
+    ok(! libinjection_cmd("find it; echo that", 18), "echo prose benign");
 }
 
 static void test_ssti(void)
@@ -1505,6 +1532,17 @@ static void test_ssti(void)
     ok(! libinjection_ssti("${user.profile}", 15), "dollar var benign");
     ok(! libinjection_ssti("config: ${config.value}", 23), "config var benign");
     ok(! libinjection_ssti("", 0), "empty");
+
+    /* Jinja2 global builtin probes */
+    ok(libinjection_ssti("{{ lipsum }}", 12), "lipsum probe");
+    ok(libinjection_ssti("{{ cycler }}", 12), "cycler probe");
+    ok(libinjection_ssti("{{ self }}", 10), "self probe");
+    ok(libinjection_ssti("{% set x=1 %}", 13), "set tag");
+    ok(libinjection_ssti("{{namespace}}", 13), "namespace probe");
+    /* word boundary: substring matches must stay benign */
+    ok(! libinjection_ssti("{{ himself }}", 13), "self substring benign");
+    ok(! libinjection_ssti("{{ reset password }}", 19), "set substring benign");
+    ok(! libinjection_ssti("{{ offset calc }}", 17), "set substring 2 benign");
 }
 
 static void test_nosql(void)
@@ -1596,6 +1634,21 @@ static void test_code(void)
     ok(! libinjection_redirect("goto=//comment-not-a-host", 25), "slash comment benign");
     ok(! libinjection_redirect("cb=https://api.vendor.io/v1", 27), "vendor url benign");
     ok(! libinjection_redirect("", 0), "redirect empty");
+
+    /* redirect-intent param + absolute http(s):// URL */
+    ok(libinjection_redirect("goto=https://evil.com", 21), "goto absolute");
+    ok(libinjection_redirect("destination=http://evil.com", 26), "destination absolute");
+    ok(libinjection_redirect("?redirect=https://evil.com", 26), "redirect query prefix");
+    ok(libinjection_redirect("a=1&dest=https://evil.com", 25), "dest second segment");
+    /* redirect-intent params whose value IS an absolute URL by
+     * design (OAuth2 redirect_uri/callback, login round-trip
+     * returnUrl) must stay benign: only an integrator-side domain
+     * whitelist can judge the host */
+    ok(! libinjection_redirect("redirect_uri=https://auth.example.com/cb", 37), "oauth redirect_uri benign");
+    ok(! libinjection_redirect("callback=https://api.example.com/oauth", 36), "oauth callback benign");
+    ok(! libinjection_redirect("returnUrl=http://internal-portal.local/login", 45), "login returnUrl benign");
+    ok(! libinjection_redirect("return_url=https://shop.example.com/cart", 37), "return_url benign");
+    ok(! libinjection_redirect("redirectx=https://x.com", 22), "param prefix benign");
 }
 
 static void test_classify_p23(void)
