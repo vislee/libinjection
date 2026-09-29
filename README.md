@@ -272,6 +272,7 @@ LICENSE
 =============
 
 Copyright (c) 2012-2016 Nick Galbreath
+Copyright (c) 2026 vislee
 
 Licensed under the standard [BSD 3-Clause](http://opensource.org/licenses/BSD-3-Clause) open source
 license.  See [COPYING](/COPYING) for details.
