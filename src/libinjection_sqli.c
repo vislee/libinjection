@@ -1,5 +1,6 @@
 /**
  * Copyright 2012,2016  Nick Galbreath
+ * Copyright (c) 2026 vislee
  * nickg@client9.com
  * BSD License -- see COPYING.txt for details
  *
