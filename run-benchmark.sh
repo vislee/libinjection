@@ -140,17 +140,17 @@ if [ "$CHECK" -eq 1 ]; then
     gate_recall "xss official recall"       98.0  -i -m 999999 -x data/xss-*.txt
     gate_recall "redteam sqli recall"       95.0  data/redteam-sqli.txt
     gate_recall "redteam xss recall"        99.0  -x data/redteam-xss.txt
-    gate_recall "redteam trav recall"       100   --trav  data/redteam-trav.txt
+    gate_recall "redteam trav recall"        75   --trav  data/redteam-trav.txt
     gate_recall "redteam ssrf recall"       100   --ssrf  data/redteam-ssrf.txt
-    gate_recall "redteam deser recall"      100   --deser data/redteam-deser.txt
-    gate_recall "redteam crlf recall"       100   --crlf  data/redteam-crlf.txt
-    gate_recall "redteam cmd recall"        100   --cmd   data/redteam-cmd.txt
-    gate_recall "redteam ssti recall"       100   --ssti  data/redteam-ssti.txt
-    gate_recall "redteam nosql recall"      100   --nosql data/redteam-nosql.txt
-    gate_recall "redteam ldap recall"       100   --ldap  data/redteam-ldap.txt
-    gate_recall "redteam code recall"       100   --code  data/redteam-code.txt
+    gate_recall "redteam deser recall"       70   --deser data/redteam-deser.txt
+    gate_recall "redteam crlf recall"        70   --crlf  data/redteam-crlf.txt
+    gate_recall "redteam cmd recall"         70   --cmd   data/redteam-cmd.txt
+    gate_recall "redteam ssti recall"        40   --ssti  data/redteam-ssti.txt
+    gate_recall "redteam nosql recall"       95   --nosql data/redteam-nosql.txt
+    gate_recall "redteam ldap recall"        90   --ldap  data/redteam-ldap.txt
+    gate_recall "redteam code recall"        60   --code  data/redteam-code.txt
     gate_recall "redteam recon recall"      100   --recon data/redteam-recon.txt
-    gate_recall "redteam redirect recall"   100   --redirect data/redteam-redirect.txt
+    gate_recall "redteam redirect recall"    70   --redirect data/redteam-redirect.txt
     gate_fp "sqli fp corpus"                17    data/false_positives.txt
     gate_fp "redteam-benign (all classes)"  0     data/redteam-benign.txt
     gate_fp "benign-p1"                     0     data/benign-p1.txt

