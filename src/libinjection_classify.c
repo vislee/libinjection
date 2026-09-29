@@ -91,18 +91,36 @@ static libinjection_class_mask_t classify_impl(
         return 0;
     }
 
-    found = scan_classes(s, slen, want, 0);
-    if (decode_rounds <= 0 || found == want) {
-        return found;
+    /*
+     * Embedded NUL bytes truncate the token stream in the SQLi/XSS
+     * engines ("1\x00' AND 1=1" → only "1" is seen).  Strip them
+     * before any scanning so the real payload after the null is
+     * examined.  We copy first because strip is in-place and the
+     * caller's buffer is const.
+     */
+    if (memchr(s, '\0', slen) != NULL) {
+        buf = (char*) malloc(slen);
+        if (buf == NULL) {
+            /* allocation failed: fall back to raw scan on the
+             * original (null-laden) input */
+            return scan_classes(s, slen, want, 0);
+        }
+        memcpy(buf, s, slen);
+        len = libinjection_strip_nulls(buf, slen);
+    } else {
+        buf = (char*) malloc(slen + 1);
+        if (buf == NULL) {
+            return scan_classes(s, slen, want, 0);
+        }
+        memcpy(buf, s, slen);
+        len = slen;
     }
 
-    buf = (char*) malloc(slen + 1);
-    if (buf == NULL) {
-        /* no room for decode stages: the raw scan result stands */
+    found = scan_classes(buf, len, want, 0);
+    if (decode_rounds <= 0 || found == want) {
+        free(buf);
         return found;
     }
-    memcpy(buf, s, slen);
-    len = slen;
 
     for (round = 0; round < decode_rounds && found != want; ++round) {
         if (! libinjection_urldecode_has_encoded(buf, len)) {

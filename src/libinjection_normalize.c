@@ -75,6 +75,25 @@ int libinjection_urldecode_has_encoded(const char* buf, size_t len)
         memchr(buf, '+', len) != NULL;
 }
 
+/*
+ * Strips all NUL bytes from buf in-place and returns the new length.
+ * Used by both scan paths (sqli_url and classify_url) so that embedded
+ * null bytes don't truncate the token stream before detection.
+ */
+size_t libinjection_strip_nulls(char* buf, size_t len)
+{
+    size_t readpos = 0;
+    size_t writepos = 0;
+
+    while (readpos < len) {
+        if (buf[readpos] != '\0') {
+            buf[writepos++] = buf[readpos];
+        }
+        readpos += 1;
+    }
+    return writepos;
+}
+
 int libinjection_scan_url(const char* input, size_t slen, int max_rounds,
                           libinjection_scan_fn scan, void* userdata)
 {
@@ -82,19 +101,47 @@ int libinjection_scan_url(const char* input, size_t slen, int max_rounds,
     size_t len;
     int round;
     int found;
+    const char* np;
 
-    found = scan(input, slen, userdata);
-    if (found || slen == 0 || max_rounds <= 0) {
-        return found;
+    /*
+     * Null bytes (\x00) inside a payload truncate the token stream in
+     * the SQLi/XSS engines, so that everything after the null is
+     * never examined.  Attackers exploit this by embedding a null
+     * before the real payload (e.g. "1\x00' AND 1=1").  Strip all
+     * null bytes *before* scanning — the raw scan sees the cleaned
+     * input, and every decode round inherits a null-free buffer.
+     */
+    np = (const char*) memchr(input, '\0', slen);
+    if (np != NULL) {
+        buf = (char*) malloc(slen);
+        if (buf == NULL) {
+            /* allocation failed: fall back to raw scan on the
+             * original (null-laden) input — same as pre-null-strip
+             * behaviour */
+            return scan(input, slen, userdata);
+        }
+        memcpy(buf, input, slen);
+        len = libinjection_strip_nulls(buf, slen);
+    } else {
+        /* no null bytes: scan raw first */
+        found = scan(input, slen, userdata);
+        if (found || slen == 0 || max_rounds <= 0) {
+            return found;
+        }
+        buf = (char*) malloc(slen + 1);
+        if (buf == NULL) {
+            return found;
+        }
+        memcpy(buf, input, slen);
+        len = slen;
     }
 
-    buf = (char*) malloc(slen + 1);
-    if (buf == NULL) {
-        /* no room for decode stages: the raw scan result stands */
+    /* scan the (possibly null-stripped) input before any URL decoding */
+    found = scan(buf, len, userdata);
+    if (found || max_rounds <= 0) {
+        free(buf);
         return found;
     }
-    memcpy(buf, input, slen);
-    len = slen;
 
     for (round = 0; round < max_rounds; ++round) {
         if (! libinjection_urldecode_has_encoded(buf, len)) {

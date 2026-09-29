@@ -40,6 +40,13 @@ int libinjection_scan_url(const char* input, size_t slen, int max_rounds,
  */
 int libinjection_urldecode_has_encoded(const char* buf, size_t len);
 
+/*
+ * Strips all NUL bytes from buf in-place; returns the new length.
+ * Embedded nulls truncate the SQLi/XSS token stream, so callers that
+ * receive untrusted input should strip them before scanning.
+ */
+size_t libinjection_strip_nulls(char* buf, size_t len);
+
 #ifdef __cplusplus
 }
 #endif

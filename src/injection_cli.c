@@ -161,6 +161,34 @@ static void json_escape(const char* s, size_t len)
     }
 }
 
+/*
+ * Binary-safe line reader: reads one line (up to and including '\n')
+ * from f into buf.  Unlike fgets+strlen, embedded NUL bytes are
+ * preserved so that null-byte payloads reach the detection engine.
+ * Returns the line length, or -1 on EOF with no data read.
+ */
+static int read_line_bin(FILE* f, char* buf, size_t bufsize)
+{
+    size_t len = 0;
+    int c;
+
+    while (len + 1 < bufsize) {
+        c = fgetc(f);
+        if (c == EOF) {
+            if (len == 0) {
+                return -1;
+            }
+            break;
+        }
+        buf[len++] = (char) c;
+        if (c == '\n') {
+            break;
+        }
+    }
+    buf[len] = '\0';
+    return (int) len;
+}
+
 static int process(const char* input, size_t len,
                    libinjection_class_mask_t want, int decode,
                    int as_json, int quiet, int want_fp,
@@ -278,9 +306,11 @@ int main(int argc, char** argv)
                     quiet, want_fp, &any_match);
         }
     } else {
-        /* inputs from stdin, one per line */
-        while (fgets(line, sizeof(line), stdin) != NULL) {
-            size_t slen = strlen(line);
+        /* inputs from stdin, one per line (binary-safe: embedded
+         * NUL bytes are preserved so null-byte payloads reach the
+         * detection engine) */
+        while ((i = read_line_bin(stdin, line, sizeof(line))) >= 0) {
+            size_t slen = (size_t) i;
             while (slen > 0 && (line[slen - 1] == '\n' ||
                                 line[slen - 1] == '\r')) {
                 line[--slen] = '\0';
