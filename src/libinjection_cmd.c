@@ -339,7 +339,21 @@ int libinjection_cmd(const char* s, size_t len)
         ci_contains(s, len, "printf \\x") ||
         ci_contains(s, len, "iex(") ||
         ci_contains(s, len, "invoke-expression") ||
-        ci_contains(s, len, "downloadstring")) {
+        ci_contains(s, len, "downloadstring") ||
+        ci_contains(s, len, "${ifs}") ||
+        ci_contains(s, len, "$ifs") ||
+        ci_contains(s, len, "{cat,") ||
+        ci_contains(s, len, "{ls,") ||
+        ci_contains(s, len, "{,ifconfig") ||
+        ci_contains(s, len, "{,echo") ||
+        ci_contains(s, len, "{,/?s?") ||
+        ci_contains(s, len, "nohup ") ||
+        ci_contains(s, len, "/" "?""?" "?/" "?""?t") ||
+        ci_contains(s, len, "/" "?""?" "?/" "?""?ss") ||
+        ci_contains(s, len, "/" "?""?" "?/p" "?""?s") ||
+        ci_contains(s, len, "cat /" "?""?" "?") ||
+        ci_contains(s, len, "/" "?""?" "?/" "?""?" "?d") ||
+        ci_contains(s, len, "nslookup ")) {
         return TRUE;
     }
 

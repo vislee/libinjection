@@ -42,6 +42,10 @@ static const char* HEADER_MARKERS[] = {
     , "transfer-encoding"
     , "x-forwarded"
     , "refresh:"
+    , "access-control-allow"
+    , "access-control-expose"
+    , "origin:"
+    , "referer:"
     , NULL
 };
 
@@ -56,6 +60,7 @@ static const char* HEADER_MARKERS_X[] = {
     , "x-host:"
     , "x-target:"
     , "x-site:"
+    , "x-custom-header:"
     , NULL
 };
 

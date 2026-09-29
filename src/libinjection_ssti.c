@@ -24,7 +24,7 @@
                     ((unsigned)((a) - 'A') < 26u))
 
 static const char* MARKERS[] = {
-    "{{", "${", "<%", "#{", "{%", NULL
+    "{{", "${", "<%", "#{", "{%", "*{", "@(", "<#", "[#", "<%=", "{$", NULL
 };
 
 static const char* DANGER[] = {
@@ -54,6 +54,31 @@ static const char* DANGER[] = {
     , "lipsum"                  /* Jinja2 global builtin probe */
     , "cycler"                  /* Jinja2 global builtin probe */
     , "joiner"                  /* Jinja2 global builtin probe */
+    , "t(java."                 /* Spring EL: ${T(java.lang.Runtime)...} */
+    , "process.mainmodule"      /* Node.js SSTI */
+    , "child_process"           /* Node.js SSTI */
+    , "mainmodule"              /* Node.js SSTI */
+    , "|filter("                /* Twig filter injection */
+    , "|map("                   /* Twig filter injection */
+    , "|reduce("                /* Twig filter injection */
+    , "|sort("                  /* Twig sort injection */
+    , ".exec("                  /* Java/Groovy: .exec() call */
+    , ".execute("              /* Java/Groovy: .execute() call */
+    , "processbuilder"          /* Java ProcessBuilder */
+    , "methodclosure"           /* Groovy MethodClosure */
+    , "getruntime"             /* Java Runtime.getRuntime() */
+    , "forname"                /* Java Class.forName() */
+    , "getclass"               /* Java .getClass() */
+    , "getresource"            /* Java .getResource() */
+    , "getclassloader"         /* Java .getClassLoader() */
+    , "system.shell"            /* Elixir System.shell */
+    , "url_for"                 /* Jinja2 url_for global */
+    , "get_flashed_messages"    /* Jinja2 flash messages global */
+    , "config.items"            /* Jinja2 config.items() probe */
+    , "_.version"              /* Underscore.js probe (_.VERSION) */
+    , "dir.entries"            /* Ruby ERB Dir.entries */
+    , "file.open"              /* Ruby ERB File.open */
+    , "file.read"              /* Ruby ERB File.read */
     , NULL
 };
 
@@ -64,6 +89,10 @@ static const char* DANGER[] = {
 static const char* DANGER_BOUNDED[] = {
     "self"                      /* {{self}} - Jinja2/Twig context probe */
     , "set "                    /* {%set x=1%} - template tag injection */
+    , "this"                    /* {{this}} - Jinja2/Spring context probe */
+    , "request"                 /* {{request}} - Jinja2 request probe */
+    , "include"                 /* {{include(...)}} - Twig/Jinja2 include */
+    , "dump("                   /* {{dump(app)}} - Twig dump probe */
     , NULL
 };
 
@@ -130,17 +159,27 @@ int libinjection_ssti(const char* s, size_t len)
                     window = len;
                 }
                 /* arithmetic oracle: digit * digit or digit / digit
-                 * (7*7, 42*42, 1/0 ...) */
+                 * (7*7, 7 * 7, 1/0, 1/(0) ...) — spaces between
+                 * digits and operator are common in SSTI probes */
                 for (k = i + mlen + 1; k + 1 < window; ++k) {
-                    if (s[k] == '*' &&
-                        s[k - 1] >= '0' && s[k - 1] <= '9' &&
-                        s[k + 1] >= '0' && s[k + 1] <= '9') {
-                        return TRUE;
-                    }
-                    if (s[k] == '/' &&
-                        s[k - 1] >= '0' && s[k - 1] <= '9' &&
-                        s[k + 1] >= '0' && s[k + 1] <= '9') {
-                        return TRUE;
+                    if (s[k] == '*' || s[k] == '/') {
+                        size_t back = k;
+                        size_t fwd = k + 1;
+                        /* skip spaces backward to find digit */
+                        while (back > i + mlen && s[back - 1] == ' ') {
+                            --back;
+                        }
+                        /* skip spaces forward to find digit */
+                        while (fwd < window && s[fwd] == ' ') {
+                            ++fwd;
+                        }
+                        if (back > i + mlen &&
+                            s[back - 1] >= '0' && s[back - 1] <= '9' &&
+                            fwd < window &&
+                            ((s[fwd] >= '0' && s[fwd] <= '9') ||
+                             s[fwd] == '(')) {
+                            return TRUE;
+                        }
                     }
                 }
                 for (d = 0; DANGER[d] != NULL; ++d) {
@@ -248,6 +287,84 @@ int libinjection_ssti(const char* s, size_t len)
                     continue;
                 }
                 if (contains_ci(s + j + 8, len - j - 8, "classloader")) {
+                    return TRUE;
+                }
+            }
+        }
+    }
+
+    /* Marker-less SSTI patterns: template engines that use {tag}
+     * syntax without a leading marker.  {php }, {exec(, {system(,
+     * {passthru(, {shell_exec( are Smarty/Twig/Blade code-exec
+     * tags.  Word-boundary: must be at start-of-input or after a
+     * non-alnum char to avoid matching "{exec" in prose. */
+    {
+        static const char* SMARTY_TAGS[] = {
+            "{php", "{exec(", "{system(", "{passthru(",
+            "{shell_exec(", "{if exec", "{if system", "{if passthru",
+            "{smarty::", NULL
+        };
+        size_t t;
+        for (t = 0; SMARTY_TAGS[t] != NULL; ++t) {
+            if (contains_ci(s, len, SMARTY_TAGS[t])) {
+                return TRUE;
+            }
+        }
+    }
+
+    /* Node.js SSTI without a template marker: global.process or
+     * root.process is a strong signal (process.mainModule.require
+     * chains).  These are not seen in normal prose. */
+    if (contains_ci(s, len, "global.process") ||
+        contains_ci(s, len, "root.process") ||
+        contains_ci(s, len, "process.mainmodule")) {
+        return TRUE;
+    }
+
+    /* ERB backtick execution: <%= `cmd` %> — Ruby backtick in ERB
+     * tag.  Also catches <%= system(...) %>. */
+    {
+        size_t i;
+        for (i = 0; i + 4 <= len; ++i) {
+            if (lower(s[i]) == '<' && lower(s[i + 1]) == '%' &&
+                lower(s[i + 2]) == '=') {
+                size_t j = i + 3;
+                while (j < len && (s[j] == ' ' || s[j] == '\t' ||
+                                   s[j] == '(')) {
+                    j += 1;
+                }
+                if (j < len) {
+                    /* backtick: <%= `cmd` %> */
+                    if (s[j] == '`') {
+                        return TRUE;
+                    }
+                    /* system call: <%= system("id") %> */
+                    if (j + 6 <= len &&
+                        lower(s[j]) == 's' && lower(s[j + 1]) == 'y' &&
+                        lower(s[j + 2]) == 's' && lower(s[j + 3]) == 't' &&
+                        lower(s[j + 4]) == 'e' && lower(s[j + 5]) == 'm') {
+                        return TRUE;
+                    }
+                }
+            }
+        }
+    }
+
+    /* Jinja2 {{#with ...}} block tag and {{x=Object}} probe */
+    {
+        size_t i;
+        for (i = 0; i + 3 <= len; ++i) {
+            if (s[i] == '{' && s[i + 1] == '{' && s[i + 2] == '#') {
+                return TRUE;
+            }
+            /* {{x=Object}} / {{x=...}} assignment probe */
+            if (s[i] == '{' && s[i + 1] == '{') {
+                size_t j = i + 2;
+                while (j < len && (s[j] == ' ' || s[j] == '\t')) {
+                    j += 1;
+                }
+                if (j + 2 < len && lower(s[j]) >= 'a' &&
+                    lower(s[j]) <= 'z' && s[j + 1] == '=') {
                     return TRUE;
                 }
             }

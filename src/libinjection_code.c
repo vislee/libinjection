@@ -26,6 +26,20 @@ static const char* NEEDLES[] = {
     , "system('"
     , "shell_exec("
     , "passthru(\""
+    , "runtime.getruntime"
+    , "processbuilder"
+    , "subprocess.popen"
+    , "subprocess.call"
+    , "__import__('os"
+    , "__import__(\"os"
+    , "os.popen('"
+    , "os.popen(\""
+    , "os.system('"
+    , "os.system(\""
+    , "popen('"
+    , "popen(\""
+    , "expect_popen("
+    , "${@eval("
     , NULL
 };
 
